@@ -1,1 +1,1 @@
-﻿"""CodeReviewBot package."""
+"""CodeReviewBot package."""
