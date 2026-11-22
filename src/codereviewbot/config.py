@@ -12,6 +12,7 @@ class Settings(BaseModel):
     llm_api_key: SecretStr | None = None
     llm_base_url: str | None = None
     llm_model: str | None = None
+    github_token: SecretStr | None = None
     log_level: str = "INFO"
 
     def require_llm_api_key(self) -> str:
@@ -28,5 +29,6 @@ def get_settings() -> Settings:
         llm_api_key=os.getenv("LLM_API_KEY"),
         llm_base_url=os.getenv("LLM_BASE_URL"),
         llm_model=os.getenv("LLM_MODEL"),
+        github_token=os.getenv("GITHUB_TOKEN"),
         log_level=os.getenv("LOG_LEVEL", "INFO"),
     )
