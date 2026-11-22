@@ -1,4 +1,4 @@
-﻿"""Simple standard-library logging setup."""
+"""Simple standard-library logging setup."""
 
 import logging
 
