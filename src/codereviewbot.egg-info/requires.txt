@@ -1,6 +1,0 @@
-pydantic<3,>=2.14
-httpx<0.29,>=0.28
-python-dotenv<2,>=1.2
-
-[dev]
-pytest<10,>=9.2
