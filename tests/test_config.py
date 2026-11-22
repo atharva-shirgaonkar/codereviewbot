@@ -1,4 +1,4 @@
-﻿"""Tests for environment-based configuration."""
+"""Tests for environment-based configuration."""
 
 import pytest
 
