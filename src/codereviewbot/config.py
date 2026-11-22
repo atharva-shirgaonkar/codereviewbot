@@ -1,4 +1,4 @@
-﻿"""Application settings loaded from environment variables."""
+"""Application settings loaded from environment variables."""
 
 import os
 
