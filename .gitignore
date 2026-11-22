@@ -1,9 +1,10 @@
-__pycache__/
-*.py[cod]
 .venv/
 venv/
-.env
+__pycache__/
+*.pyc
+*.egg-info/
 .pytest_cache/
 .vscode/
+.env
 data/
 results/
