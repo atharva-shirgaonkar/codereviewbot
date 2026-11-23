@@ -13,6 +13,8 @@ class Settings(BaseModel):
     llm_base_url: str | None = None
     llm_model: str | None = None
     github_token: SecretStr | None = None
+    llm_input_price_per_m: float | None = None
+    llm_output_price_per_m: float | None = None
     log_level: str = "INFO"
 
     def require_llm_api_key(self) -> str:
@@ -30,5 +32,7 @@ def get_settings() -> Settings:
         llm_base_url=os.getenv("LLM_BASE_URL"),
         llm_model=os.getenv("LLM_MODEL"),
         github_token=os.getenv("GITHUB_TOKEN"),
+        llm_input_price_per_m=os.getenv("LLM_INPUT_PRICE_PER_M") or None,
+        llm_output_price_per_m=os.getenv("LLM_OUTPUT_PRICE_PER_M") or None,
         log_level=os.getenv("LOG_LEVEL", "INFO"),
     )
