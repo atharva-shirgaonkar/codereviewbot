@@ -165,3 +165,86 @@ def test_post_comment_raises_clear_error_on_404() -> None:
                 dry_run=False,
                 client=client,
             )
+
+
+def test_github_error_includes_message_and_truncates() -> None:
+    """GitHub JSON error messages are included up to 200 characters."""
+    message = "GitHub refused the request: " + "x" * 220 + " END_MARKER"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(403, json={"message": message})
+
+    with make_client(httpx.MockTransport(handler)) as client:
+        with pytest.raises(tools.GitHubApiError) as error:
+            tools.get_diff("example/project", 7, client=client)
+
+    assert message[:200] in str(error.value)
+    assert "END_MARKER" not in str(error.value)
+
+
+def test_github_error_redacts_authorization_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A token echoed by an error response is redacted from the exception."""
+    from pydantic import SecretStr
+
+    secret = "mock-github-token"
+    monkeypatch.setattr(
+        tools,
+        "get_settings",
+        lambda: Settings(github_token=SecretStr(secret)),
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(401, json={"message": f"Invalid token {secret}."})
+
+    with make_client(httpx.MockTransport(handler)) as client:
+        with pytest.raises(tools.GitHubApiError) as error:
+            tools.get_diff("example/project", 7, client=client)
+
+    assert secret not in str(error.value)
+    assert "Authorization" not in str(error.value)
+
+
+def test_post_comment_commit_id_skips_pull_request_get() -> None:
+    """An explicit commit SHA avoids the extra pull request lookup."""
+    requests: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(201, json={"id": 42})
+
+    with make_client(httpx.MockTransport(handler)) as client:
+        result = tools.post_comment(
+            "example/project",
+            7,
+            "src/app.py",
+            12,
+            "Looks good.",
+            dry_run=False,
+            client=client,
+            commit_id="explicit-sha",
+        )
+
+    assert len(requests) == 1
+    assert requests[0].method == "POST"
+    assert requests[0].read() == (
+        b'{"body":"Looks good.","commit_id":"explicit-sha",'
+        b'"path":"src/app.py","line":12,"side":"RIGHT"}'
+    )
+    assert result["id"] == 42
+
+
+def test_truncate_diff_returns_short_diff_unchanged() -> None:
+    """A short diff is returned without a truncation marker."""
+    diff = "short diff"
+
+    assert tools.truncate_diff(diff, max_chars=20) == diff
+
+
+def test_truncate_diff_marks_removed_character_count() -> None:
+    """A long diff is cut and reports exactly how many characters were removed."""
+    result = tools.truncate_diff("abcdefghij", max_chars=4)
+
+    assert result.startswith("abcd\n\n")
+    assert "6 characters removed" in result
