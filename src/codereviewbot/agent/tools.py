@@ -71,12 +71,33 @@ def _request(
         )
 
 
+def _error_message(response: httpx.Response) -> str:
+    """Return a short, redacted message from a GitHub JSON error."""
+    try:
+        body = response.json()
+    except ValueError:
+        return ""
+    if not isinstance(body, dict) or not isinstance(body.get("message"), str):
+        return ""
+
+    message = " ".join(body["message"].split())
+    authorization = response.request.headers.get("Authorization", "")
+    if authorization:
+        message = message.replace(authorization, "[redacted]")
+        _, _, credential = authorization.partition(" ")
+        if credential:
+            message = message.replace(credential, "[redacted]")
+    return message[:200]
+
+
 def _check_status(response: httpx.Response, expected_status: int = 200) -> None:
     """Raise a readable error for any unexpected HTTP status."""
     if response.status_code != expected_status:
+        message = _error_message(response)
+        detail = f": {message}" if message else ""
         raise GitHubApiError(
             f"GitHub API returned HTTP {response.status_code} "
-            f"for {response.request.method} {response.request.url.path}."
+            f"for {response.request.method} {response.request.url.path}{detail}."
         )
 
 
@@ -125,6 +146,7 @@ def post_comment(
     body: str,
     dry_run: bool = True,
     client: httpx.Client | None = None,
+    commit_id: str | None = None,
 ) -> dict[str, Any]:
     """Log a proposed inline comment, or post it when dry_run is disabled."""
     if dry_run:
@@ -147,14 +169,15 @@ def post_comment(
 
     repository_path = _repository_path(repo)
     headers = _headers("application/vnd.github+json")
-    pull_url = f"{API_BASE_URL}{repository_path}/pulls/{pr_number}"
-    pull_response = _request("GET", pull_url, headers, client)
-    _check_status(pull_response)
-    pull_data = pull_response.json()
-    try:
-        commit_id = pull_data["head"]["sha"]
-    except (KeyError, TypeError) as error:
-        raise GitHubApiError("GitHub pull request response did not include head.sha.") from error
+    if commit_id is None:
+        pull_url = f"{API_BASE_URL}{repository_path}/pulls/{pr_number}"
+        pull_response = _request("GET", pull_url, headers, client)
+        _check_status(pull_response)
+        pull_data = pull_response.json()
+        try:
+            commit_id = pull_data["head"]["sha"]
+        except (KeyError, TypeError) as error:
+            raise GitHubApiError("GitHub pull request response did not include head.sha.") from error
 
     comment_url = f"{API_BASE_URL}{repository_path}/pulls/{pr_number}/comments"
     comment_response = _request(
@@ -175,3 +198,13 @@ def post_comment(
     if not isinstance(comment_data, dict):
         raise GitHubApiError("GitHub API returned an invalid review comment response.")
     return comment_data
+
+
+def truncate_diff(diff: str, max_chars: int = 60000) -> str:
+    """Limit retained diff text and report how many characters were removed."""
+    if max_chars < 0:
+        raise ValueError("max_chars must be zero or greater.")
+    if len(diff) <= max_chars:
+        return diff
+    removed = len(diff) - max_chars
+    return f"{diff[:max_chars]}\n\n[Diff truncated: {removed} characters removed.]"
