@@ -40,7 +40,7 @@ TOOL_SCHEMAS: list[dict[str, object]] = [
                 "repo": {"type": "string", "description": "Repository as owner/name."},
                 "pr_number": {"type": "integer", "description": "Pull request number."},
                 "path": {"type": "string", "description": "Repository-relative file path."},
-                "line": {"type": "integer", "description": "Line number in the diff."},
+                "line": {"type": "integer", "description": "Line number in the new version of the file."},
                 "body": {"type": "string", "description": "Review comment text."},
             },
             "required": ["repo", "pr_number", "path", "line", "body"],
