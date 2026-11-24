@@ -6,4 +6,5 @@ from typing import Any
 
 from ..models import ReviewParseError, ReviewResult, parse_review_json
 from ..usage import UsageTracker
+from . import tools
 from .prompts import SYSTEM_PROMPT
