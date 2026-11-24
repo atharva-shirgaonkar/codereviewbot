@@ -64,3 +64,66 @@ def _append_tool_turn(
 ) -> None:
     """Append function-call and corresponding output items to full history."""
     for call in calls:
+        messages.append(
+            {
+                "type": "function_call",
+                "call_id": call.id,
+                "name": call.name,
+                "arguments": json.dumps(call.arguments),
+            }
+        )
+    for call in calls:
+        messages.append(
+            {
+                "type": "function_call_output",
+                "call_id": call.id,
+                "output": _tool_output(call, repo, dry_run),
+            }
+        )
+
+
+def run_review(
+    repo: str,
+    pr_number: int,
+    client: LLMClient,
+    max_steps: int = 8,
+    tracker: UsageTracker | None = None,
+    dry_run: bool = True,
+) -> ReviewResult:
+    """Run a bounded review and return the validated findings."""
+    if max_steps < 1:
+        raise ValueError("max_steps must be at least 1.")
+
+    messages = _initial_messages(repo, pr_number)
+    usage_tracker = tracker or UsageTracker()
+    parse_failures = 0
+
+    for step in range(1, max_steps + 1):
+        logger.info("Review step %d", step)
+        response = client.chat(messages, TOOL_SCHEMAS)
+        usage_tracker.record(response.usage)
+
+        if response.tool_calls:
+            for call in response.tool_calls:
+                logger.info("Review step %d requested tool %s", step, call.name)
+            _append_tool_turn(messages, response.tool_calls, repo, dry_run)
+            continue
+
+        try:
+            return parse_review_json(response.content or "")
+        except ReviewParseError:
+            parse_failures += 1
+            if parse_failures >= 2:
+                raise
+            messages.extend(
+                [
+                    {"role": "assistant", "content": response.content or ""},
+                    {
+                        "role": "user",
+                        "content": "Your response was not valid review JSON. "
+                        "Return a corrected JSON object matching ReviewResult only.",
+                    },
+                ]
+            )
+
+    raise StepLimitError(f"Review reached the limit of {max_steps} model steps.")
