@@ -37,3 +37,4 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
         return {"error": "Tool repository must match the pull request repository."}
 
     if call.name == "get_diff":
+        return tools.truncate_diff(tools.get_diff(**arguments))
