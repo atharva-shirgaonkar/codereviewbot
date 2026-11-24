@@ -44,3 +44,4 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
         arguments["dry_run"] = dry_run
         return tools.post_comment(**arguments)
     return {"error": f"Unknown tool: {call.name}"}
+
