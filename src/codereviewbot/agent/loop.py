@@ -24,3 +24,4 @@ def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
         {
+            "role": "user",
