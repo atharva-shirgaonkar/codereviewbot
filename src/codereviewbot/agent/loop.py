@@ -15,3 +15,4 @@ from .types import LLMClient, ToolCall
 logger = logging.getLogger(__name__)
 
 
+class StepLimitError(RuntimeError):
