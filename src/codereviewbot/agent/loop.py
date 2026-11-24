@@ -47,3 +47,4 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
 
 
 def _tool_output(call: ToolCall, repo: str, dry_run: bool) -> str:
+    """Run one call and encode either its value or a short error for the model."""
