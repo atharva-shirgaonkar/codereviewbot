@@ -19,3 +19,4 @@ class StepLimitError(RuntimeError):
     """Raised when a review needs more model turns than allowed."""
 
 
+def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
