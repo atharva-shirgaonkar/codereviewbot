@@ -25,3 +25,4 @@ def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
         {"role": "system", "content": SYSTEM_PROMPT},
         {
             "role": "user",
+            "content": f"Review pull request #{pr_number} in {repo}.",
