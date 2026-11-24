@@ -33,3 +33,4 @@ def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
 def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
     """Validate a requested tool and run it with the loop's safety settings."""
     arguments = dict(call.arguments)
+    if arguments.get("repo") != repo:
