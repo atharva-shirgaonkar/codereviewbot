@@ -12,3 +12,4 @@ from .schemas import TOOL_SCHEMAS
 from .types import LLMClient, ToolCall
 
 
+logger = logging.getLogger(__name__)
