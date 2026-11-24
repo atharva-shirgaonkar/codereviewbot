@@ -34,3 +34,4 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
     """Validate a requested tool and run it with the loop's safety settings."""
     arguments = dict(call.arguments)
     if arguments.get("repo") != repo:
+        return {"error": "Tool repository must match the pull request repository."}
