@@ -22,3 +22,4 @@ class StepLimitError(RuntimeError):
 def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
     """Create the initial Responses API input history."""
     return [
+        {"role": "system", "content": SYSTEM_PROMPT},
