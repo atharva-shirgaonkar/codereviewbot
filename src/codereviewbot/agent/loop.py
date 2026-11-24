@@ -46,3 +46,4 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
     return {"error": f"Unknown tool: {call.name}"}
 
 
+def _tool_output(call: ToolCall, repo: str, dry_run: bool) -> str:
