@@ -39,3 +39,4 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
     if call.name == "get_diff":
         return tools.truncate_diff(tools.get_diff(**arguments))
     if call.name == "read_file":
+        return tools.read_file(**arguments)
