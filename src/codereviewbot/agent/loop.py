@@ -48,3 +48,11 @@ def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
 
 def _tool_output(call: ToolCall, repo: str, dry_run: bool) -> str:
     """Run one call and encode either its value or a short error for the model."""
+    try:
+        result = _run_tool(call, repo, dry_run)
+    except Exception as error:
+        message = " ".join(str(error).split())[:300]
+        result = {"error": message or "Tool failed."}
+    return json.dumps(result, ensure_ascii=False, default=str)
+
+
