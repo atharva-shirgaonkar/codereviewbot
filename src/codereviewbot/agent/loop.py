@@ -30,3 +30,4 @@ def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
     ]
 
 
+def _run_tool(call: ToolCall, repo: str, dry_run: bool) -> Any:
