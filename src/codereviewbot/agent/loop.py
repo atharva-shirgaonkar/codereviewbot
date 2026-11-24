@@ -28,3 +28,4 @@ def _initial_messages(repo: str, pr_number: int) -> list[dict[str, Any]]:
             "content": f"Review pull request #{pr_number} in {repo}.",
         },
     ]
+
