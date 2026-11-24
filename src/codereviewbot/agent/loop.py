@@ -56,3 +56,11 @@ def _tool_output(call: ToolCall, repo: str, dry_run: bool) -> str:
     return json.dumps(result, ensure_ascii=False, default=str)
 
 
+def _append_tool_turn(
+    messages: list[dict[str, Any]],
+    calls: list[ToolCall],
+    repo: str,
+    dry_run: bool,
+) -> None:
+    """Append function-call and corresponding output items to full history."""
+    for call in calls:
