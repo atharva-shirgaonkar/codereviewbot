@@ -17,3 +17,13 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="Evaluate at most N cases")
     parser.add_argument("--max-steps", type=int, default=8, help="Model turns per review")
     args = parser.parse_args()
+    if args.limit is not None and args.limit < 1:
+        parser.error("--limit must be at least 1")
+
+    cases = load_cases(args.cases)
+    if args.limit is not None:
+        cases = cases[: args.limit]
+    settings = get_settings()
+    client = HttpLLMClient()
+    summary = run_eval(
+        cases,
