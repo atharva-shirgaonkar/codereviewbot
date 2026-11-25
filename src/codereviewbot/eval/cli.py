@@ -19,6 +19,14 @@ def main() -> None:
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument(
         "--handcheck-export",
+        nargs=2,
+        metavar=("RESULTS_DIR", "OUT_CSV"),
+        help="Export a seeded sample of saved judge decisions",
+    )
+    modes.add_argument("--handcheck-score", metavar="CSV", help="Score completed hand-check labels")
+    modes.add_argument("--report", metavar="SUMMARY_JSON", help="Render a saved run summary")
+    parser.add_argument("--cases", help="Path to the JSONL case dataset")
+    parser.add_argument("--out", help="Directory for evaluation results")
     parser.add_argument("--limit", type=int, help="Evaluate at most N cases")
     parser.add_argument("--max-steps", type=int, default=8, help="Model turns per review")
     args = parser.parse_args()
