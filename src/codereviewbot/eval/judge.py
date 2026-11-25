@@ -72,3 +72,9 @@ class FakeJudge:
 
     def matches(self, comment_message: str, issue_description: str) -> bool:
         """Return the next scripted decision and fail if none remain."""
+        self.comparisons.append((comment_message, issue_description))
+        if self._next >= len(self._matches):
+            raise RuntimeError("FakeJudge has no scripted decisions left.")
+        decision = self._matches[self._next]
+        self._next += 1
+        return decision
