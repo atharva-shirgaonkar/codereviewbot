@@ -29,7 +29,21 @@ def main() -> None:
     parser.add_argument("--out", help="Directory for evaluation results")
     parser.add_argument("--limit", type=int, help="Evaluate at most N cases")
     parser.add_argument("--max-steps", type=int, default=8, help="Model turns per review")
+    parser.add_argument("--seed", type=int, default=42, help="Hand-check sample seed")
     args = parser.parse_args()
+
+    if args.handcheck_export:
+        exported = export_handcheck(*args.handcheck_export, seed=args.seed)
+        print(f"Exported {exported} judge decisions.")
+        return
+    if args.handcheck_score:
+        print(json.dumps(agreement(args.handcheck_score), indent=2))
+        return
+    if args.report:
+        print(results_table(args.report))
+        return
+    if not args.cases or not args.out:
+        parser.error("--cases and --out are required when running an evaluation.")
     if args.limit is not None and args.limit < 1:
         parser.error("--limit must be at least 1")
 
