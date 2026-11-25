@@ -73,3 +73,33 @@ class FakeUsefulnessJudge:
         self._next += 1
         return result
 
+
+def noise_summary(
+    comments: Sequence[ReviewComment],
+    decisions: Sequence[JudgeDecision],
+    judge: UsefulnessJudge,
+) -> dict[str, int | float]:
+    """Count matched and useful/unuseful unmatched comments.
+
+    A comment matched to ground truth is useful by definition. Only unmatched
+    comments are sent to the usefulness judge.
+    """
+    matched_indices = {decision.comment_index for decision in decisions if decision.match}
+    matched = len(matched_indices)
+    unmatched_useful = 0
+    unmatched_useless = 0
+    for index, comment in enumerate(comments):
+        if index in matched_indices:
+            continue
+        if judge.is_useful(comment.message):
+            unmatched_useful += 1
+        else:
+            unmatched_useless += 1
+    total = len(comments)
+    return {
+        "total_comments": total,
+        "matched": matched,
+        "unmatched_useful": unmatched_useful,
+        "unmatched_useless": unmatched_useless,
+        "noise_rate": unmatched_useless / total if total else 0.0,
+    }
