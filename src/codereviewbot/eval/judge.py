@@ -9,3 +9,7 @@ from ..agent.types import LLMClient
 
 logger = logging.getLogger(__name__)
 
+
+class Judge(Protocol):
+    """Compare a predicted comment with one expected issue."""
+
