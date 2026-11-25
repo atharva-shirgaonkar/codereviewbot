@@ -40,3 +40,16 @@ def export_handcheck(
         writer.writeheader()
         for decision in sample:
             writer.writerow(
+                {
+                    "id": (
+                        f"{decision['case_id']}:{decision['comment_index']}"
+                        f":{decision['issue_index']}"
+                    ),
+                    "comment": decision["comment_message"],
+                    "issue": decision["issue_description"],
+                    "judge_match": str(decision["match"]).lower(),
+                    "judge_reason": decision["reason"],
+                    "human_match": "",
+                }
+            )
+    return len(sample)
