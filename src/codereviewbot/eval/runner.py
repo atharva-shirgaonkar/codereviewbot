@@ -100,3 +100,9 @@ def run_eval(
                 recall=0.0,
                 f1=0.0,
                 cost_usd=usage["cost_usd"],
+                latency_seconds=elapsed,
+            )
+
+        case_scores.append(case_score)
+        filename = _case_filename(index, case.case_id)
+        _write_json(
