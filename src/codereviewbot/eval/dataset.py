@@ -22,3 +22,7 @@ class EvalCase(BaseModel):
     repo: str
     pr_number: int
     language: str
+    issues: list[GroundTruthIssue]
+
+
+def load_cases(path: str | Path) -> list[EvalCase]:
