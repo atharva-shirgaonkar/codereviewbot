@@ -44,3 +44,8 @@ def match_comments(
     if line_tolerance < 0:
         raise ValueError("line_tolerance must be zero or greater.")
 
+    matches: list[tuple[int, int]] = []
+    used_issues: set[int] = set()
+    for comment_index, comment in enumerate(comments):
+        for issue_index, issue in enumerate(issues):
+            if issue_index in used_issues:
