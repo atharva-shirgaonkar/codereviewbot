@@ -48,3 +48,9 @@ def _write_json(path: Path, data: dict[str, Any], settings: Settings) -> None:
                 content = content.replace(value, "[redacted]")
     path.write_text(content + "\n", encoding="utf-8")
 
+
+def run_eval(
+    cases: Sequence[EvalCase],
+    client: LLMClient,
+    judge: Judge,
+    out_dir: str | Path,
