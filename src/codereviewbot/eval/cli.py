@@ -39,3 +39,7 @@ def main() -> None:
     print(f"Micro F1               {metrics['micro_f1']:.3f}")
     cost = metrics["mean_cost_usd"]
     if cost is None:
+        cost_text = "unknown"
+    else:
+        cost_text = f"{cost:.6f}"
+    print(f"Mean cost (USD)        {cost_text}")
