@@ -102,3 +102,9 @@ class FakeJudge:
 class RecordingJudge:
     """Add pair context and decision history around any Judge implementation."""
 
+    def __init__(self, judge: Judge, case_id: str = "") -> None:
+        self._judge = judge
+        self._case_id = case_id
+        self._comment_index = -1
+        self._issue_index = -1
+        self.decisions: list[JudgeDecision] = []
