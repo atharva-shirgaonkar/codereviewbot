@@ -43,3 +43,7 @@ class LLMJudge:
                     ),
                 },
             ],
+            [],
+        )
+        try:
+            if response.tool_calls or response.content is None:
