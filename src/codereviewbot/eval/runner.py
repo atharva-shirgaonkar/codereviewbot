@@ -54,3 +54,8 @@ def run_eval(
     client: LLMClient,
     judge: Judge,
     out_dir: str | Path,
+    max_steps: int = 8,
+) -> dict[str, Any]:
+    """Run each case independently, recording errors and aggregate metrics."""
+    output_dir = Path(out_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
