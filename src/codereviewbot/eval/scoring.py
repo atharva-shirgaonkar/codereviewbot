@@ -35,6 +35,7 @@ def match_comments(
     issues: Sequence[GroundTruthIssue],
     judge: IssueJudge,
     line_tolerance: int = 5,
+    case_id: str = "",
 ) -> list[tuple[int, int]]:
     """Greedily match comments to unused same-path issues within line tolerance.
 
@@ -54,6 +55,9 @@ def match_comments(
                 continue
             if abs(comment.line - issue.line) > line_tolerance:
                 continue
+            set_context = getattr(judge, "set_context", None)
+            if callable(set_context):
+                set_context(case_id, comment_index, issue_index)
             if judge.matches(comment.message, issue.description):
                 matches.append((comment_index, issue_index))
                 used_issues.add(issue_index)
@@ -73,9 +77,10 @@ def score_case(
     line_tolerance: int = 5,
     cost_usd: float | None = None,
     latency_seconds: float = 0.0,
+    case_id: str = "",
 ) -> CaseScore:
     """Score findings by one-to-one matches, extras, and missed issues."""
-    matches = match_comments(comments, issues, judge, line_tolerance)
+    matches = match_comments(comments, issues, judge, line_tolerance, case_id)
     true_positives = len(matches)
     false_positives = len(comments) - true_positives
     false_negatives = len(issues) - true_positives
