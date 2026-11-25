@@ -35,3 +35,7 @@ def main() -> None:
     metrics = summary["aggregate"]
     print("Metric                 Value")
     print(f"Micro precision        {metrics['micro_precision']:.3f}")
+    print(f"Micro recall           {metrics['micro_recall']:.3f}")
+    print(f"Micro F1               {metrics['micro_f1']:.3f}")
+    cost = metrics["mean_cost_usd"]
+    if cost is None:
