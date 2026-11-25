@@ -21,3 +21,7 @@ class Judge(Protocol):
 class LLMJudge:
     """Use an LLM client to make strict-JSON semantic match decisions."""
 
+    def __init__(self, client: LLMClient) -> None:
+        self._client = client
+
+    def matches(self, comment_message: str, issue_description: str) -> bool:
