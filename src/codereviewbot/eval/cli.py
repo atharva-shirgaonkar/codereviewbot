@@ -43,3 +43,7 @@ def main() -> None:
     else:
         cost_text = f"{cost:.6f}"
     print(f"Mean cost (USD)        {cost_text}")
+    print(f"Mean latency (seconds) {metrics['mean_latency_seconds']:.3f}")
+    print(f"Model                  {settings.llm_model or 'not configured'}")
+
+
