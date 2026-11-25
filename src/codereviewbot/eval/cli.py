@@ -58,6 +58,7 @@ def main() -> None:
         LLMJudge(client),
         args.out,
         max_steps=args.max_steps,
+        usefulness_judge=LLMUsefulnessJudge(client),
     )
     metrics = summary["aggregate"]
     print("Metric                 Value")
