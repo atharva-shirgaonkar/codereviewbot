@@ -123,3 +123,9 @@ def run_eval(
     run_summary: dict[str, Any] = {
         "run_timestamp": datetime.now(timezone.utc).isoformat(),
         "model": settings.llm_model,
+        "case_count": len(cases),
+        "error_count": error_count,
+        "aggregate": aggregate(case_scores),
+    }
+    _write_json(output_dir / "summary.json", run_summary, settings)
+    return run_summary
