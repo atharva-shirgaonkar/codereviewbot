@@ -2,12 +2,26 @@
 
 import json
 import logging
+from dataclasses import dataclass
 from typing import Protocol
 
 from ..agent.types import LLMClient
 
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class JudgeDecision:
+    """Auditable result for one comment and expected-issue comparison."""
+
+    case_id: str
+    comment_index: int
+    issue_index: int
+    comment_message: str
+    issue_description: str
+    match: bool
+    reason: str
 
 
 class Judge(Protocol):
