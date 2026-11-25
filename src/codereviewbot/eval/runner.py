@@ -21,3 +21,8 @@ from .scoring import CaseScore, aggregate, score_case
 logger = logging.getLogger(__name__)
 
 
+def _safe_error(error: Exception, settings: Settings) -> str:
+    """Return a short error message with configured credentials removed."""
+    message = " ".join(str(error).split())
+    for secret in (settings.llm_api_key, settings.github_token):
+        if secret is not None:
