@@ -67,3 +67,10 @@ def _ratio(numerator: int, denominator: int) -> float:
 
 
 def score_case(
+    comments: Sequence[ReviewComment],
+    issues: Sequence[GroundTruthIssue],
+    judge: IssueJudge,
+    line_tolerance: int = 5,
+    cost_usd: float | None = None,
+    latency_seconds: float = 0.0,
+) -> CaseScore:
