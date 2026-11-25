@@ -52,3 +52,7 @@ class LLMJudge:
             if (
                 not isinstance(data, dict)
                 or set(data) != {"match", "reason"}
+                or type(data["match"]) is not bool
+                or not isinstance(data["reason"], str)
+            ):
+                raise ValueError
