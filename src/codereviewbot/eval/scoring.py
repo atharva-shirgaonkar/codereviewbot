@@ -33,3 +33,9 @@ class CaseScore:
 def match_comments(
     comments: Sequence[ReviewComment],
     issues: Sequence[GroundTruthIssue],
+    judge: IssueJudge,
+    line_tolerance: int = 5,
+) -> list[tuple[int, int]]:
+    """Greedily match comments to unused same-path issues within line tolerance.
+
+    Comments and issues are considered in input order. Each is used at most
