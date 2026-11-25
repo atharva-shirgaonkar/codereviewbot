@@ -13,3 +13,7 @@ logger = logging.getLogger(__name__)
 class Judge(Protocol):
     """Compare a predicted comment with one expected issue."""
 
+    def matches(self, comment_message: str, issue_description: str) -> bool:
+        """Return whether the comment identifies the expected issue."""
+        ...
+
