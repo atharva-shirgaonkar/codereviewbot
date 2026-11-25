@@ -75,3 +75,8 @@ def run_eval(
                 client,
                 max_steps=max_steps,
                 tracker=tracker,
+                dry_run=True,
+            )
+            elapsed = time.perf_counter() - started
+            usage = tracker.summary()
+            case_score = score_case(
