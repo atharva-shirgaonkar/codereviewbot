@@ -115,3 +115,7 @@ def run_eval(
                 "review": review.model_dump(mode="json") if review is not None else None,
                 "score": case_score.__dict__,
                 "usage": usage,
+                "error": error_text,
+            },
+            settings,
+        )
