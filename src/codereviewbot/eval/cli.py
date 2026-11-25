@@ -47,3 +47,5 @@ def main() -> None:
     print(f"Model                  {settings.llm_model or 'not configured'}")
 
 
+if __name__ == "__main__":
+    main()
