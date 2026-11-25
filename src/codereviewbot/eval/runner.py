@@ -111,3 +111,7 @@ def run_eval(
                 "case_id": case.case_id,
                 "repo": case.repo,
                 "pr_number": case.pr_number,
+                "language": case.language,
+                "review": review.model_dump(mode="json") if review is not None else None,
+                "score": case_score.__dict__,
+                "usage": usage,
