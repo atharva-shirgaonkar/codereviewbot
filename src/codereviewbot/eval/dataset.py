@@ -6,3 +6,7 @@ from pathlib import Path
 from pydantic import BaseModel, ValidationError
 
 
+class GroundTruthIssue(BaseModel):
+    """One expected review finding in a benchmark case."""
+
+    path: str
