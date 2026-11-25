@@ -39,3 +39,8 @@ def match_comments(
     """Greedily match comments to unused same-path issues within line tolerance.
 
     Comments and issues are considered in input order. Each is used at most
+    once, so duplicate comments cannot inflate the true-positive count.
+    """
+    if line_tolerance < 0:
+        raise ValueError("line_tolerance must be zero or greater.")
+
