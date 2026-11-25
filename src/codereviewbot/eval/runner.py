@@ -42,3 +42,9 @@ def _write_json(path: Path, data: dict[str, Any], settings: Settings) -> None:
     """Write JSON while removing configured credentials from stored text."""
     content = json.dumps(data, indent=2, ensure_ascii=False)
     for secret in (settings.llm_api_key, settings.github_token):
+        if secret is not None:
+            value = secret.get_secret_value()
+            if value:
+                content = content.replace(value, "[redacted]")
+    path.write_text(content + "\n", encoding="utf-8")
+
