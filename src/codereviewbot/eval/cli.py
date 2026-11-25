@@ -27,3 +27,7 @@ def main() -> None:
     client = HttpLLMClient()
     summary = run_eval(
         cases,
+        client,
+        LLMJudge(client),
+        args.out,
+        max_steps=args.max_steps,
