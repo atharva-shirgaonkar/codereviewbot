@@ -14,3 +14,7 @@ class GroundTruthIssue(BaseModel):
     description: str
     category: str | None = None
 
+
+class EvalCase(BaseModel):
+    """A pull request and its expected findings."""
+
