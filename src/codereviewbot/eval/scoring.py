@@ -28,3 +28,8 @@ class CaseScore:
     f1: float
     cost_usd: float | None = None
     latency_seconds: float = 0.0
+
+
+def match_comments(
+    comments: Sequence[ReviewComment],
+    issues: Sequence[GroundTruthIssue],
