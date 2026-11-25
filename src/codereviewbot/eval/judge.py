@@ -39,3 +39,7 @@ class LLMJudge:
                         {
                             "comment": comment_message,
                             "expected_issue": issue_description,
+                        }
+                    ),
+                },
+            ],
