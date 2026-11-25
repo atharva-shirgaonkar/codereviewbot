@@ -49,3 +49,9 @@ def match_comments(
     for comment_index, comment in enumerate(comments):
         for issue_index, issue in enumerate(issues):
             if issue_index in used_issues:
+                continue
+            if comment.path != issue.path:
+                continue
+            if abs(comment.line - issue.line) > line_tolerance:
+                continue
+            if judge.matches(comment.message, issue.description):
