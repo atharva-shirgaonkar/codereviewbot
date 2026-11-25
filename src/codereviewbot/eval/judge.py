@@ -5,3 +5,7 @@ import logging
 from typing import Protocol
 
 from ..agent.types import LLMClient
+
+
+logger = logging.getLogger(__name__)
+
