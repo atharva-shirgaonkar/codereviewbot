@@ -26,3 +26,8 @@ def _safe_error(error: Exception, settings: Settings) -> str:
     message = " ".join(str(error).split())
     for secret in (settings.llm_api_key, settings.github_token):
         if secret is not None:
+            value = secret.get_secret_value()
+            if value:
+                message = message.replace(value, "[redacted]")
+    return f"{type(error).__name__}: {message[:300]}"
+
