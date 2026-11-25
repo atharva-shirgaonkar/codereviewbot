@@ -94,3 +94,9 @@ def run_eval(
             usage = tracker.summary()
             case_score = CaseScore(
                 true_positives=0,
+                false_positives=0,
+                false_negatives=len(case.issues),
+                precision=0.0,
+                recall=0.0,
+                f1=0.0,
+                cost_usd=usage["cost_usd"],
