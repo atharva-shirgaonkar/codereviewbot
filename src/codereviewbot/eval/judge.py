@@ -56,3 +56,7 @@ class LLMJudge:
                 or not isinstance(data["reason"], str)
             ):
                 raise ValueError
+            return data["match"]
+        except (ValueError, TypeError, KeyError):
+            logger.warning("LLM judge returned invalid JSON; treating it as no match.")
+            return False
