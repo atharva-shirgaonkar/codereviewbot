@@ -68,3 +68,7 @@ class FakeJudge:
     def __init__(self, matches: bool | list[bool] = True) -> None:
         self._matches = matches if isinstance(matches, list) else [matches]
         self._next = 0
+        self.comparisons: list[tuple[str, str]] = []
+
+    def matches(self, comment_message: str, issue_description: str) -> bool:
+        """Return the next scripted decision and fail if none remain."""
