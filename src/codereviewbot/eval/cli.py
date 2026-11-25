@@ -31,3 +31,7 @@ def main() -> None:
         LLMJudge(client),
         args.out,
         max_steps=args.max_steps,
+    )
+    metrics = summary["aggregate"]
+    print("Metric                 Value")
+    print(f"Micro precision        {metrics['micro_precision']:.3f}")
