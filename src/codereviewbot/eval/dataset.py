@@ -42,3 +42,4 @@ def load_cases(path: str | Path) -> list[EvalCase]:
                 raise ValueError(
                     f"Dataset line {line_number} does not match the EvalCase schema."
                 ) from None
+    return cases
