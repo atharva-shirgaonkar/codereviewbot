@@ -31,3 +31,8 @@ def _safe_error(error: Exception, settings: Settings) -> str:
                 message = message.replace(value, "[redacted]")
     return f"{type(error).__name__}: {message[:300]}"
 
+
+def _case_filename(index: int, case_id: str) -> str:
+    """Make a readable result filename that cannot escape the output folder."""
+    safe_id = re.sub(r"[^A-Za-z0-9._-]", "_", case_id).strip(".") or "case"
+    return f"case-{index:04d}-{safe_id}.json"
