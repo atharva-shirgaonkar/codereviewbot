@@ -85,3 +85,7 @@ def run_eval(
                 judge,
                 cost_usd=usage["cost_usd"],
                 latency_seconds=elapsed,
+            )
+        except Exception as error:
+            error_count += 1
+            elapsed = time.perf_counter() - started
