@@ -55,3 +55,9 @@ def match_comments(
             if abs(comment.line - issue.line) > line_tolerance:
                 continue
             if judge.matches(comment.message, issue.description):
+                matches.append((comment_index, issue_index))
+                used_issues.add(issue_index)
+                break
+    return matches
+
+
