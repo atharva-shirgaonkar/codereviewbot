@@ -47,3 +47,8 @@ class LLMJudge:
         )
         try:
             if response.tool_calls or response.content is None:
+                raise ValueError
+            data = json.loads(response.content)
+            if (
+                not isinstance(data, dict)
+                or set(data) != {"match", "reason"}
