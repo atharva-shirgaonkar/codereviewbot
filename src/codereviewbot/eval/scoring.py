@@ -61,3 +61,9 @@ def match_comments(
     return matches
 
 
+def _ratio(numerator: int, denominator: int) -> float:
+    """Return a metric ratio, using zero when no denominator exists."""
+    return numerator / denominator if denominator else 0.0
+
+
+def score_case(
