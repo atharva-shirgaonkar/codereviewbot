@@ -23,3 +23,8 @@ class CaseScore:
     true_positives: int
     false_positives: int
     false_negatives: int
+    precision: float
+    recall: float
+    f1: float
+    cost_usd: float | None = None
+    latency_seconds: float = 0.0
