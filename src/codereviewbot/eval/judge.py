@@ -34,3 +34,8 @@ class LLMJudge:
                     'Return ONLY JSON: {"match": true or false, "reason": "..."}.',
                 },
                 {
+                    "role": "user",
+                    "content": json.dumps(
+                        {
+                            "comment": comment_message,
+                            "expected_issue": issue_description,
