@@ -64,3 +64,28 @@ def _parse_label(value: str, row_number: int, column: str) -> bool:
         return False
     raise ValueError(f"Invalid {column} value on CSV row {row_number}: use true or false.")
 
+
+def agreement(csv_path: str | Path) -> dict[str, int | float]:
+    """Measure judge agreement for rows with a human label."""
+    labeled = 0
+    agreements = 0
+    false_matches = 0
+    false_non_matches = 0
+    with Path(csv_path).open(newline="", encoding="utf-8") as csv_file:
+        reader = csv.DictReader(csv_file)
+        if reader.fieldnames is None or not set(CSV_COLUMNS).issubset(reader.fieldnames):
+            raise ValueError("CSV must contain id, comment, issue, judge_match, judge_reason, human_match columns.")
+        for row_number, row in enumerate(reader, start=2):
+            if not any((value or "").strip() for value in row.values() if value is not None):
+                continue
+            human_value = (row.get("human_match") or "").strip()
+            if not human_value:
+                continue
+            judge_match = _parse_label(row.get("judge_match") or "", row_number, "judge_match")
+            human_match = _parse_label(human_value, row_number, "human_match")
+            labeled += 1
+            if judge_match == human_match:
+                agreements += 1
+            elif judge_match:
+                false_matches += 1
+            else:
