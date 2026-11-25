@@ -18,3 +18,8 @@ class IssueJudge(Protocol):
 
 @dataclass
 class CaseScore:
+    """Counts and derived metrics for one evaluated pull request."""
+
+    true_positives: int
+    false_positives: int
+    false_negatives: int
