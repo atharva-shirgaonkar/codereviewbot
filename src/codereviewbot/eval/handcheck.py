@@ -89,3 +89,10 @@ def agreement(csv_path: str | Path) -> dict[str, int | float]:
             elif judge_match:
                 false_matches += 1
             else:
+                false_non_matches += 1
+    return {
+        "n_labeled": labeled,
+        "agreement_rate": agreements / labeled if labeled else 0.0,
+        "false_matches": false_matches,
+        "false_non_matches": false_non_matches,
+    }
