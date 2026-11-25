@@ -18,3 +18,7 @@ class GroundTruthIssue(BaseModel):
 class EvalCase(BaseModel):
     """A pull request and its expected findings."""
 
+    case_id: str
+    repo: str
+    pr_number: int
+    language: str
