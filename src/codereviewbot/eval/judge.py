@@ -29,3 +29,8 @@ class LLMJudge:
         response = self._client.chat(
             [
                 {
+                    "role": "system",
+                    "content": 'Decide if the review comment describes the expected issue. '
+                    'Return ONLY JSON: {"match": true or false, "reason": "..."}.',
+                },
+                {
