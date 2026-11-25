@@ -60,3 +60,7 @@ class LLMJudge:
         except (ValueError, TypeError, KeyError):
             logger.warning("LLM judge returned invalid JSON; treating it as no match.")
             return False
+
+
+class FakeJudge:
+    """Return fixed or scripted match decisions and record compared text."""
