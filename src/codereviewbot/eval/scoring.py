@@ -13,3 +13,8 @@ class IssueJudge(Protocol):
 
     def matches(self, comment_message: str, issue_description: str) -> bool:
         """Return whether the two descriptions refer to the same issue."""
+        ...
+
+
+@dataclass
+class CaseScore:
