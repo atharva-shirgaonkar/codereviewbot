@@ -106,3 +106,8 @@ def run_eval(
         case_scores.append(case_score)
         filename = _case_filename(index, case.case_id)
         _write_json(
+            output_dir / filename,
+            {
+                "case_id": case.case_id,
+                "repo": case.repo,
+                "pr_number": case.pr_number,
