@@ -6,5 +6,6 @@ __pycache__/
 .pytest_cache/
 .vscode/
 .env
-data/
+data/*
+!data/sample_cases.example.jsonl
 results/
