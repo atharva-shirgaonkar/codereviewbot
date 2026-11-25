@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 import pytest
@@ -27,7 +28,7 @@ def _case(case_id: str, repo: str = "owner/project") -> EvalCase:
 
 
 def test_runner_records_case_error_and_writes_summary(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Keep going after one failed case and save safe result files."""
     settings = Settings(llm_model="fake-model", llm_api_key="test-secret")
@@ -53,25 +54,27 @@ def test_runner_records_case_error_and_writes_summary(
     monkeypatch.setattr(runner, "run_review", fake_review)
     client = FakeLLMClient([])
 
-    summary = runner.run_eval(
-        [_case("success"), _case("failure", "owner/failure")],
-        client,
-        FakeJudge(),
-        tmp_path,
-    )
+    with TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+        output_dir = Path(temp_dir)
+        summary = runner.run_eval(
+            [_case("success"), _case("failure", "owner/failure")],
+            client,
+            FakeJudge(),
+            output_dir,
+        )
 
-    assert summary["model"] == "fake-model"
-    assert summary["case_count"] == 2
-    assert summary["error_count"] == 1
-    assert (tmp_path / "summary.json").exists()
-    case_files = sorted(tmp_path.glob("case-*.json"))
-    assert len(case_files) == 2
-    failed = json.loads(case_files[1].read_text(encoding="utf-8"))
-    assert failed["error"].startswith("RuntimeError:")
-    assert "test-secret" not in json.dumps(summary) + "".join(
-        path.read_text(encoding="utf-8") for path in case_files
-    )
-    assert json.loads((tmp_path / "summary.json").read_text(encoding="utf-8")) == summary
+        assert summary["model"] == "fake-model"
+        assert summary["case_count"] == 2
+        assert summary["error_count"] == 1
+        assert (output_dir / "summary.json").exists()
+        case_files = sorted(output_dir.glob("case-*.json"))
+        assert len(case_files) == 2
+        failed = json.loads(case_files[1].read_text(encoding="utf-8"))
+        assert failed["error"].startswith("RuntimeError:")
+        assert "test-secret" not in json.dumps(summary) + "".join(
+            path.read_text(encoding="utf-8") for path in case_files
+        )
+        assert json.loads((output_dir / "summary.json").read_text(encoding="utf-8")) == summary
 
 
 def test_llm_judge_uses_fake_client_without_tools() -> None:
