@@ -132,3 +132,16 @@ class RecordingJudge:
                 )
             )
             raise
+
+        self.decisions.append(
+            JudgeDecision(
+                self._case_id,
+                self._comment_index,
+                self._issue_index,
+                comment_message,
+                issue_description,
+                match,
+                getattr(self._judge, "last_reason", ""),
+            )
+        )
+        return match
