@@ -10,3 +10,7 @@ class GroundTruthIssue(BaseModel):
     """One expected review finding in a benchmark case."""
 
     path: str
+    line: int
+    description: str
+    category: str | None = None
+
