@@ -89,3 +89,8 @@ def run_eval(
         except Exception as error:
             error_count += 1
             elapsed = time.perf_counter() - started
+            error_text = _safe_error(error, settings)
+            logger.warning("Evaluation case %s failed: %s", case.case_id, error_text)
+            usage = tracker.summary()
+            case_score = CaseScore(
+                true_positives=0,
