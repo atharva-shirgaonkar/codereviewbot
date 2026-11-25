@@ -69,3 +69,9 @@ def run_eval(
         review: ReviewResult | None = None
         error_text: str | None = None
         try:
+            review = run_review(
+                case.repo,
+                case.pr_number,
+                client,
+                max_steps=max_steps,
+                tracker=tracker,
