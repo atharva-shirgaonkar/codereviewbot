@@ -53,3 +53,14 @@ def export_handcheck(
                 }
             )
     return len(sample)
+
+
+def _parse_label(value: str, row_number: int, column: str) -> bool:
+    """Parse one CSV boolean cell with a clear row and column error."""
+    normalized = value.strip().lower()
+    if normalized == "true":
+        return True
+    if normalized == "false":
+        return False
+    raise ValueError(f"Invalid {column} value on CSV row {row_number}: use true or false.")
+
