@@ -80,3 +80,8 @@ def run_eval(
             elapsed = time.perf_counter() - started
             usage = tracker.summary()
             case_score = score_case(
+                review.comments,
+                case.issues,
+                judge,
+                cost_usd=usage["cost_usd"],
+                latency_seconds=elapsed,
