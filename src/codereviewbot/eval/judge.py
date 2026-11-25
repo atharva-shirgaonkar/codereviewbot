@@ -17,3 +17,7 @@ class Judge(Protocol):
         """Return whether the comment identifies the expected issue."""
         ...
 
+
+class LLMJudge:
+    """Use an LLM client to make strict-JSON semantic match decisions."""
+
