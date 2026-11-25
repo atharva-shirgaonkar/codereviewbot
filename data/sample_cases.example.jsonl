@@ -1,0 +1,1 @@
+{"case_id":"example-1-fake","repo":"example-owner/example-repo","pr_number":1,"language":"python","issues":[{"path":"src/example.py","line":12,"description":"Fake example issue: input is not validated.","category":"fake-example"}]}
