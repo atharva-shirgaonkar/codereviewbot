@@ -119,3 +119,7 @@ def run_eval(
             },
             settings,
         )
+
+    run_summary: dict[str, Any] = {
+        "run_timestamp": datetime.now(timezone.utc).isoformat(),
+        "model": settings.llm_model,
