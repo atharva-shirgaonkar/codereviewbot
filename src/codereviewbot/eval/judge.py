@@ -64,3 +64,7 @@ class LLMJudge:
 
 class FakeJudge:
     """Return fixed or scripted match decisions and record compared text."""
+
+    def __init__(self, matches: bool | list[bool] = True) -> None:
+        self._matches = matches if isinstance(matches, list) else [matches]
+        self._next = 0
