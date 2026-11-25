@@ -59,3 +59,8 @@ def run_eval(
     """Run each case independently, recording errors and aggregate metrics."""
     output_dir = Path(out_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    settings = get_settings()
+    case_scores: list[CaseScore] = []
+    error_count = 0
+
+    for index, case in enumerate(cases, start=1):
