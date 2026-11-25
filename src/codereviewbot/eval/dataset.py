@@ -38,3 +38,7 @@ def load_cases(path: str | Path) -> list[EvalCase]:
                 raise ValueError(f"Invalid JSON in dataset line {line_number}.") from None
             try:
                 cases.append(EvalCase.model_validate(data))
+            except ValidationError:
+                raise ValueError(
+                    f"Dataset line {line_number} does not match the EvalCase schema."
+                ) from None
