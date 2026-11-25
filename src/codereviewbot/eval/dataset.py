@@ -26,3 +26,7 @@ class EvalCase(BaseModel):
 
 
 def load_cases(path: str | Path) -> list[EvalCase]:
+    """Load one JSON object per line, reporting the bad line clearly."""
+    cases: list[EvalCase] = []
+    with Path(path).open(encoding="utf-8") as dataset_file:
+        for line_number, line in enumerate(dataset_file, start=1):
