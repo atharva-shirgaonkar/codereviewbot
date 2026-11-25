@@ -3,13 +3,21 @@
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from collections.abc import Iterator
 
 import pytest
 
 from codereviewbot.eval.dataset import EvalCase, load_cases
 
 
-def test_load_cases_reads_jsonl() -> None:
+@pytest.fixture
+def tmp_path() -> Iterator[Path]:
+    """Use project-local temporary files when Windows temp ACLs are restricted."""
+    with TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+        yield Path(temp_dir)
+
+
+def test_load_cases_reads_jsonl(tmp_path: Path) -> None:
     """Load valid rows and preserve optional issue categories."""
     row = {
         "case_id": "case-1",
@@ -20,18 +28,17 @@ def test_load_cases_reads_jsonl() -> None:
             {"path": "src/a.py", "line": 3, "description": "Expected bug", "category": "bug"}
         ],
     }
-    with TemporaryDirectory(dir=Path.cwd()) as temp_dir:
-        dataset = Path(temp_dir) / "cases.jsonl"
-        dataset.write_text(json.dumps(row) + "\n", encoding="utf-8")
+    dataset = tmp_path / "cases.jsonl"
+    dataset.write_text(json.dumps(row) + "\n", encoding="utf-8")
 
-        cases = load_cases(dataset)
+    cases = load_cases(dataset)
 
-        assert len(cases) == 1
-        assert isinstance(cases[0], EvalCase)
-        assert cases[0].issues[0].category == "bug"
+    assert len(cases) == 1
+    assert isinstance(cases[0], EvalCase)
+    assert cases[0].issues[0].category == "bug"
 
 
-def test_load_cases_reports_bad_jsonl_line() -> None:
+def test_load_cases_reports_bad_jsonl_line(tmp_path: Path) -> None:
     """Identify the exact line when a JSONL record cannot be parsed."""
     first_row = {
         "case_id": "first",
@@ -40,19 +47,17 @@ def test_load_cases_reports_bad_jsonl_line() -> None:
         "language": "python",
         "issues": [],
     }
-    with TemporaryDirectory(dir=Path.cwd()) as temp_dir:
-        dataset = Path(temp_dir) / "cases.jsonl"
-        dataset.write_text(json.dumps(first_row) + "\nnot-json\n", encoding="utf-8")
+    dataset = tmp_path / "cases.jsonl"
+    dataset.write_text(json.dumps(first_row) + "\nnot-json\n", encoding="utf-8")
 
-        with pytest.raises(ValueError, match="dataset line 2"):
-            load_cases(dataset)
+    with pytest.raises(ValueError, match="dataset line 2"):
+        load_cases(dataset)
 
 
-def test_load_cases_reports_schema_error() -> None:
+def test_load_cases_reports_schema_error(tmp_path: Path) -> None:
     """Explain which line has an invalid normalized-case shape."""
-    with TemporaryDirectory(dir=Path.cwd()) as temp_dir:
-        dataset = Path(temp_dir) / "cases.jsonl"
-        dataset.write_text("{}\n", encoding="utf-8")
+    dataset = tmp_path / "cases.jsonl"
+    dataset.write_text("{}\n", encoding="utf-8")
 
-        with pytest.raises(ValueError, match="line 1 does not match"):
-            load_cases(dataset)
+    with pytest.raises(ValueError, match="line 1 does not match"):
+        load_cases(dataset)
