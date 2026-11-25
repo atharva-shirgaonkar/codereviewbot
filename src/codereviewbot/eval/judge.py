@@ -108,3 +108,27 @@ class RecordingJudge:
         self._comment_index = -1
         self._issue_index = -1
         self.decisions: list[JudgeDecision] = []
+
+    def set_context(self, case_id: str, comment_index: int, issue_index: int) -> None:
+        """Set the finding pair that the next judge call will compare."""
+        self._case_id = case_id
+        self._comment_index = comment_index
+        self._issue_index = issue_index
+
+    def matches(self, comment_message: str, issue_description: str) -> bool:
+        """Delegate a comparison and store its result and safe reason."""
+        try:
+            match = self._judge.matches(comment_message, issue_description)
+        except Exception:
+            self.decisions.append(
+                JudgeDecision(
+                    self._case_id,
+                    self._comment_index,
+                    self._issue_index,
+                    comment_message,
+                    issue_description,
+                    False,
+                    "Judge call failed.",
+                )
+            )
+            raise
