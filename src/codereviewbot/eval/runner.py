@@ -36,3 +36,9 @@ def _case_filename(index: int, case_id: str) -> str:
     """Make a readable result filename that cannot escape the output folder."""
     safe_id = re.sub(r"[^A-Za-z0-9._-]", "_", case_id).strip(".") or "case"
     return f"case-{index:04d}-{safe_id}.json"
+
+
+def _write_json(path: Path, data: dict[str, Any], settings: Settings) -> None:
+    """Write JSON while removing configured credentials from stored text."""
+    content = json.dumps(data, indent=2, ensure_ascii=False)
+    for secret in (settings.llm_api_key, settings.github_token):
