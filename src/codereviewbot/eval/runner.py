@@ -16,3 +16,8 @@ from ..usage import UsageTracker
 from .dataset import EvalCase
 from .judge import Judge
 from .scoring import CaseScore, aggregate, score_case
+
+
+logger = logging.getLogger(__name__)
+
+
