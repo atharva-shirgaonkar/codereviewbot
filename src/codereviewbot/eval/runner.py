@@ -64,3 +64,8 @@ def run_eval(
     error_count = 0
 
     for index, case in enumerate(cases, start=1):
+        tracker = UsageTracker(settings)
+        started = time.perf_counter()
+        review: ReviewResult | None = None
+        error_text: str | None = None
+        try:
