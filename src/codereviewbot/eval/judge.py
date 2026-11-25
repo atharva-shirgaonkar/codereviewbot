@@ -25,3 +25,7 @@ class LLMJudge:
         self._client = client
 
     def matches(self, comment_message: str, issue_description: str) -> bool:
+        """Return false and log safely if the judge response is invalid."""
+        response = self._client.chat(
+            [
+                {
