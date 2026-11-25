@@ -37,6 +37,7 @@ class LLMJudge:
 
     def __init__(self, client: LLMClient) -> None:
         self._client = client
+        self.last_reason = ""
 
     def matches(self, comment_message: str, issue_description: str) -> bool:
         """Return false and log safely if the judge response is invalid."""
@@ -70,8 +71,10 @@ class LLMJudge:
                 or not isinstance(data["reason"], str)
             ):
                 raise ValueError
+            self.last_reason = data["reason"]
             return data["match"]
         except (ValueError, TypeError, KeyError):
+            self.last_reason = "Invalid judge response."
             logger.warning("LLM judge returned invalid JSON; treating it as no match.")
             return False
 
@@ -83,6 +86,7 @@ class FakeJudge:
         self._matches = matches if isinstance(matches, list) else [matches]
         self._next = 0
         self.comparisons: list[tuple[str, str]] = []
+        self.last_reason = ""
 
     def matches(self, comment_message: str, issue_description: str) -> bool:
         """Return the next scripted decision and fail if none remain."""
@@ -91,4 +95,10 @@ class FakeJudge:
             raise RuntimeError("FakeJudge has no scripted decisions left.")
         decision = self._matches[self._next]
         self._next += 1
+        self.last_reason = f"Fake judge decision: {str(decision).lower()}."
         return decision
+
+
+class RecordingJudge:
+    """Add pair context and decision history around any Judge implementation."""
+
