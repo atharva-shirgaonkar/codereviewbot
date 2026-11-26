@@ -85,6 +85,8 @@ class HttpLLMClient:
             function = {
                 key: value
                 for key, value in tool.items()
+                if key not in {"type", "name"}
+            }
     def _post(
         self,
         url: str,
