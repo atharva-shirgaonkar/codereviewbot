@@ -71,3 +71,10 @@ def convert_records(
         normalized_issues: list[dict[str, Any]] = []
         for issue_number, raw_issue in enumerate(raw_issues, start=1):
             if not isinstance(raw_issue, dict):
+                raise ValueError(f"Record {record_number} issue {issue_number} must be an object.")
+            normalized_issue: dict[str, Any] = {}
+            for field in ("path", "line", "description"):
+                source_name = source_fields[field]
+                if source_name not in raw_issue:
+                    raise ValueError(
+                        f"Record {record_number} issue {issue_number} is missing "
