@@ -138,6 +138,8 @@ class HttpLLMClient:
     def _parse_chat_response(response_data: Any) -> ModelResponse:
         """Convert one Chat Completions choice into the shared response model."""
         try:
+            choice = response_data["choices"][0]
+            message = choice["message"]
     def _post(
         self,
         url: str,
