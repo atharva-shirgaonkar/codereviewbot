@@ -143,6 +143,9 @@ class HttpLLMClient:
             usage_data = response_data["usage"]
             usage = Usage(
                 prompt_tokens=usage_data["prompt_tokens"],
+                completion_tokens=usage_data["completion_tokens"],
+            )
+        except (KeyError, IndexError, TypeError, ValidationError):
     def _post(
         self,
         url: str,
