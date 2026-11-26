@@ -120,6 +120,8 @@ class HttpLLMClient:
                 converted.append({"role": "assistant", "tool_calls": tool_calls})
                 continue
             if item_type == "function_call_output":
+                converted.append(
+                    {
     def _post(
         self,
         url: str,
