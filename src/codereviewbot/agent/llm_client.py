@@ -108,6 +108,8 @@ class HttpLLMClient:
                         arguments = json.dumps(arguments)
                     tool_calls.append(
                         {
+                            "id": call["call_id"],
+                            "type": "function",
     def _post(
         self,
         url: str,
