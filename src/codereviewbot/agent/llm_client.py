@@ -171,6 +171,8 @@ class HttpLLMClient:
             raise LLMClientError("Chat Completions tool arguments must be a JSON object.")
         try:
             return ToolCall(id=call_id, name=name, arguments=arguments)
+        except ValidationError:
+            raise LLMClientError("Chat Completions API returned an invalid tool call.") from None
     def _post(
         self,
         url: str,
