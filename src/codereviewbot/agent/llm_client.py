@@ -18,7 +18,7 @@ class LLMClientError(RuntimeError):
 
 
 class HttpLLMClient:
-    """Send Responses API requests using the configured endpoint and model."""
+    """Send Responses or Chat Completions requests using configured settings."""
 
     def __init__(
         self,
