@@ -97,6 +97,8 @@ class HttpLLMClient:
         converted: list[dict[str, Any]] = []
         index = 0
         while index < len(messages):
+            message = messages[index]
+            item_type = message.get("type")
     def _post(
         self,
         url: str,
