@@ -89,6 +89,8 @@ class HttpLLMClient:
             }
             function["name"] = tool["name"]
             chat_tools.append({"type": "function", "function": function})
+        return chat_tools
+
     def _post(
         self,
         url: str,
