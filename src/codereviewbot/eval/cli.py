@@ -50,6 +50,11 @@ def main() -> None:
         except (OSError, json.JSONDecodeError):
             parser.error("--mapping must point to a readable JSON object.")
         if not isinstance(mapping, dict):
+            parser.error("--mapping must contain a JSON object.")
+        issues_field = mapping.get("issues")
+        records = read_records(
+            args.convert,
+            issues_field=issues_field if isinstance(issues_field, str) else None,
     if args.handcheck_export:
         exported = export_handcheck(*args.handcheck_export, seed=args.seed)
         print(f"Exported {exported} judge decisions.")
