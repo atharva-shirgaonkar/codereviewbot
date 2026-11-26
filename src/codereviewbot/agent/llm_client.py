@@ -125,6 +125,8 @@ class HttpLLMClient:
                         "role": "tool",
                         "tool_call_id": message["call_id"],
                         "content": message.get("output", ""),
+                    }
+                )
     def _post(
         self,
         url: str,
