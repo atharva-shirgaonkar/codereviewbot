@@ -79,6 +79,8 @@ class HttpLLMClient:
     def _chat_tools(tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Wrap Responses function definitions in Chat Completions format."""
         chat_tools: list[dict[str, Any]] = []
+        for tool in tools:
+            if tool.get("type") != "function" or not isinstance(tool.get("name"), str):
     def _post(
         self,
         url: str,
