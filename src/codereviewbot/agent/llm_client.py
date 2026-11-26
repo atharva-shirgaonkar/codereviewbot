@@ -127,6 +127,8 @@ class HttpLLMClient:
                         "content": message.get("output", ""),
                     }
                 )
+            elif item_type is None:
+                converted.append(message)
     def _post(
         self,
         url: str,
