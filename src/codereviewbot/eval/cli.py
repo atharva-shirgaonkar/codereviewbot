@@ -7,6 +7,7 @@ from pathlib import Path
 from ..agent.llm_client import HttpLLMClient
 from ..config import get_settings
 from .dataset import load_cases
+from .convert import convert_records, filter_language, read_records, write_cases
 from .handcheck import agreement, export_handcheck
 from .judge import LLMJudge
 from .noise import LLMUsefulnessJudge
@@ -24,6 +25,7 @@ def main() -> None:
         metavar=("RESULTS_DIR", "OUT_CSV"),
         help="Export a seeded sample of saved judge decisions",
     )
+    modes.add_argument("--convert", metavar="SOURCE", help="Convert a CSV or JSON export to cases JSONL")
     modes.add_argument("--handcheck-score", metavar="CSV", help="Score completed hand-check labels")
     modes.add_argument("--report", metavar="SUMMARY_JSON", help="Render a saved run summary")
     parser.add_argument("--cases", help="Path to the JSONL case dataset")
