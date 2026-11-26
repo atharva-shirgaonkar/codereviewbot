@@ -87,6 +87,8 @@ class HttpLLMClient:
                 for key, value in tool.items()
                 if key not in {"type", "name"}
             }
+            function["name"] = tool["name"]
+            chat_tools.append({"type": "function", "function": function})
     def _post(
         self,
         url: str,
