@@ -61,6 +61,10 @@ def main() -> None:
             converted = filter_language(converted, args.language)
         if args.limit is not None:
             converted = converted[: args.limit]
+        write_cases(converted, args.out)
+        print(f"Wrote {len(converted)} normalized cases to {args.out}.")
+        return
+
     if args.handcheck_export:
         exported = export_handcheck(*args.handcheck_export, seed=args.seed)
         print(f"Exported {exported} judge decisions.")
