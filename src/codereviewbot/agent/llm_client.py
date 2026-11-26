@@ -161,6 +161,8 @@ class HttpLLMClient:
     def _parse_chat_tool_call(item: Any) -> ToolCall:
         """Decode one Chat Completions function call and validate its JSON."""
         try:
+            call_id = item["id"]
+            function = item["function"]
     def _post(
         self,
         url: str,
