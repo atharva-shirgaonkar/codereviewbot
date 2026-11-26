@@ -129,6 +129,9 @@ class HttpLLMClient:
                 )
             elif item_type is None:
                 converted.append(message)
+            else:
+                raise LLMClientError("Unsupported Responses history item for Chat Completions.")
+            index += 1
     def _post(
         self,
         url: str,
