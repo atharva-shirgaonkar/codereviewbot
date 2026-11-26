@@ -106,6 +106,8 @@ class HttpLLMClient:
                     arguments = call.get("arguments", "{}")
                     if not isinstance(arguments, str):
                         arguments = json.dumps(arguments)
+                    tool_calls.append(
+                        {
     def _post(
         self,
         url: str,
