@@ -44,6 +44,12 @@ def main() -> None:
         if not args.mapping or not args.out:
             parser.error("--convert requires --mapping and --out.")
         if args.limit is not None and args.limit < 1:
+            parser.error("--limit must be at least 1")
+        try:
+            mapping = json.loads(Path(args.mapping).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            parser.error("--mapping must point to a readable JSON object.")
+        if not isinstance(mapping, dict):
     if args.handcheck_export:
         exported = export_handcheck(*args.handcheck_export, seed=args.seed)
         print(f"Exported {exported} judge decisions.")
