@@ -40,6 +40,10 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42, help="Hand-check sample seed")
     args = parser.parse_args()
 
+    if args.convert:
+        if not args.mapping or not args.out:
+            parser.error("--convert requires --mapping and --out.")
+        if args.limit is not None and args.limit < 1:
     if args.handcheck_export:
         exported = export_handcheck(*args.handcheck_export, seed=args.seed)
         print(f"Exported {exported} judge decisions.")
