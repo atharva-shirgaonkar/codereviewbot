@@ -58,3 +58,16 @@ def convert_records(
                 f"Record {record_number} is missing source field '{issues_source}' for 'issues'."
             )
         raw_issues = record[issues_source]
+        if isinstance(raw_issues, str):
+            try:
+                raw_issues = json.loads(raw_issues)
+            except json.JSONDecodeError:
+                raise ValueError(
+                    f"Record {record_number} field '{issues_source}' must contain a JSON issue list."
+                ) from None
+        if not isinstance(raw_issues, list):
+            raise ValueError(f"Record {record_number} field '{issues_source}' must be a list.")
+
+        normalized_issues: list[dict[str, Any]] = []
+        for issue_number, raw_issue in enumerate(raw_issues, start=1):
+            if not isinstance(raw_issue, dict):
