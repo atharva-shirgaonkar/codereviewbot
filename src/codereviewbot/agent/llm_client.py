@@ -114,6 +114,8 @@ class HttpLLMClient:
                                 "name": call["name"],
                                 "arguments": arguments,
                             },
+                        }
+                    )
     def _post(
         self,
         url: str,
