@@ -99,6 +99,8 @@ class HttpLLMClient:
         while index < len(messages):
             message = messages[index]
             item_type = message.get("type")
+            if item_type == "function_call":
+                tool_calls: list[dict[str, Any]] = []
     def _post(
         self,
         url: str,
