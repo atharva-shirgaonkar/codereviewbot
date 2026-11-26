@@ -77,6 +77,8 @@ class HttpLLMClient:
 
     @staticmethod
     def _chat_tools(tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Wrap Responses function definitions in Chat Completions format."""
+        chat_tools: list[dict[str, Any]] = []
     def _post(
         self,
         url: str,
