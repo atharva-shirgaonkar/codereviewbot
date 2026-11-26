@@ -165,6 +165,8 @@ class HttpLLMClient:
             function = item["function"]
             name = function["name"]
             arguments = json.loads(function["arguments"])
+        except (KeyError, TypeError, ValueError):
+            raise LLMClientError("Chat Completions API returned invalid JSON tool arguments.") from None
     def _post(
         self,
         url: str,
