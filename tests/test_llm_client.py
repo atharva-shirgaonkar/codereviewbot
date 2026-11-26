@@ -33,6 +33,17 @@ def response_body(output: list[dict[str, object]]) -> dict[str, object]:
     }
 
 
+def set_api_style(monkeypatch: pytest.MonkeyPatch, style: str, api_key: str | None = "test-only-key") -> None:
+    """Set isolated test configuration for one API style."""
+    settings = Settings(
+        llm_api_key=SecretStr(api_key) if api_key is not None else None,
+        llm_base_url="https://llm.example/v1",
+        llm_model="test-model",
+        llm_api_style=style,
+    )
+    monkeypatch.setattr(llm_client, "get_settings", lambda: settings)
+
+
 def test_chat_parses_tool_call(configured_client: None) -> None:
     """The client sends a Responses request and parses function arguments."""
     tool_schema = {"type": "function", "name": "read_file"}
@@ -170,3 +181,237 @@ def test_tool_schemas_use_responses_format() -> None:
     post_schema = TOOL_SCHEMAS[2]
     properties = post_schema["parameters"]["properties"]
     assert "dry_run" not in properties
+
+
+def test_chat_completions_parses_plain_answer(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Send a Chat Completions request and parse its text and token usage."""
+    set_api_style(monkeypatch, "chat_completions")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url.path == "/v1/chat/completions"
+        body = json.loads(request.content)
+        assert body["messages"] == [{"role": "user", "content": "Review this."}]
+        assert body["tools"] == []
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"role": "assistant", "content": "Looks good."}}],
+                "usage": {"prompt_tokens": 8, "completion_tokens": 3},
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        response = HttpLLMClient(client=client).chat(
+            [{"role": "user", "content": "Review this."}], []
+        )
+
+    assert response.content == "Looks good."
+    assert response.tool_calls == []
+    assert response.usage.prompt_tokens == 8
+    assert response.usage.completion_tokens == 3
+
+
+def test_chat_completions_parses_tool_call(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Convert tool schemas and parse a Chat Completions function call."""
+    set_api_style(monkeypatch, "chat_completions")
+    schema = {
+        "type": "function",
+        "name": "read_file",
+        "description": "Read a file",
+        "parameters": {"type": "object", "properties": {"path": {"type": "string"}}},
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert body["tools"] == [
+            {
+                "type": "function",
+                "function": {
+                    "name": "read_file",
+                    "description": "Read a file",
+                    "parameters": schema["parameters"],
+                },
+            }
+        ]
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": None,
+                            "tool_calls": [
+                                {
+                                    "id": "call-1",
+                                    "type": "function",
+                                    "function": {
+                                        "name": "read_file",
+                                        "arguments": '{"path":"README.md"}',
+                                    },
+                                }
+                            ],
+                        }
+                    }
+                ],
+                "usage": {"prompt_tokens": 9, "completion_tokens": 4},
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        response = HttpLLMClient(client=client).chat([], [schema])
+
+    assert response.content is None
+    assert response.tool_calls[0].id == "call-1"
+    assert response.tool_calls[0].name == "read_file"
+    assert response.tool_calls[0].arguments == {"path": "README.md"}
+
+
+def test_chat_completions_converts_grouped_tool_history(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Group internal function items into one assistant call message."""
+    set_api_style(monkeypatch, "chat_completions")
+    messages = [
+        {"role": "system", "content": "Review."},
+        {"role": "user", "content": "Inspect PR."},
+        {
+            "type": "function_call",
+            "call_id": "call-a",
+            "name": "get_diff",
+            "arguments": '{"repo":"o/r","pr_number":1}',
+        },
+        {
+            "type": "function_call",
+            "call_id": "call-b",
+            "name": "read_file",
+            "arguments": '{"repo":"o/r","path":"a.py","ref":"main"}',
+        },
+        {"type": "function_call_output", "call_id": "call-a", "output": "diff"},
+        {"type": "function_call_output", "call_id": "call-b", "output": "file"},
+    ]
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert body["messages"] == [
+            {"role": "system", "content": "Review."},
+            {"role": "user", "content": "Inspect PR."},
+            {
+                "role": "assistant",
+                "tool_calls": [
+                    {
+                        "id": "call-a",
+                        "type": "function",
+                        "function": {
+                            "name": "get_diff",
+                            "arguments": '{"repo":"o/r","pr_number":1}',
+                        },
+                    },
+                    {
+                        "id": "call-b",
+                        "type": "function",
+                        "function": {
+                            "name": "read_file",
+                            "arguments": '{"repo":"o/r","path":"a.py","ref":"main"}',
+                        },
+                    },
+                ],
+            },
+            {"role": "tool", "tool_call_id": "call-a", "content": "diff"},
+            {"role": "tool", "tool_call_id": "call-b", "content": "file"},
+        ]
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"role": "assistant", "content": "done"}}],
+                "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = HttpLLMClient(client=client).chat(messages, [])
+
+    assert result.content == "done"
+
+
+def test_chat_completions_rejects_invalid_arguments(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Reject malformed tool argument JSON without returning source text."""
+    set_api_style(monkeypatch, "chat_completions")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": None,
+                            "tool_calls": [
+                                {
+                                    "id": "call-a",
+                                    "function": {"name": "read_file", "arguments": "private-{"},
+                                }
+                            ],
+                        }
+                    }
+                ],
+                "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(LLMClientError, match="invalid JSON tool arguments") as error:
+            HttpLLMClient(client=client).chat([], [])
+
+    assert "private" not in str(error.value)
+
+
+def test_chat_completions_http_error_hides_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Chat endpoint HTTP errors expose only status and path."""
+    set_api_style(monkeypatch, "chat_completions")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(401, text="test-only-key must not be shown")
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(LLMClientError) as error:
+            HttpLLMClient(client=client).chat([], [])
+
+    assert "HTTP 401" in str(error.value)
+    assert "/v1/chat/completions" in str(error.value)
+    assert "test-only-key" not in str(error.value)
+    assert "Authorization" not in str(error.value)
+
+
+def test_chat_completions_missing_key_errors_without_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A Chat Completions call requires a key only when invoked."""
+    set_api_style(monkeypatch, "chat_completions", api_key=None)
+    requests: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(200)
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(ValueError, match="LLM_API_KEY is required"):
+            HttpLLMClient(client=client).chat([], [])
+
+    assert requests == []
+
+
+def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An unsupported API style raises a clear error when the client is used."""
+    set_api_style(monkeypatch, "mystery")
+    requests: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(200)
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(LLMClientError, match="LLM_API_STYLE must be"):
+            HttpLLMClient(client=client).chat([], [])
+
+    assert requests == []

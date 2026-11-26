@@ -86,3 +86,51 @@ def convert_records(
         try:
             cases.append(EvalCase.model_validate(values))
         except ValidationError:
+            raise ValueError(f"Record {record_number} does not match the case schema.") from None
+    return cases
+
+
+def read_records(path: str | Path, issues_field: str | None = None) -> list[dict[str, Any]]:
+    """Read CSV rows or JSON objects/lists without inferring benchmark layouts."""
+    source_path = Path(path)
+    if source_path.suffix.lower() == ".csv":
+        with source_path.open(newline="", encoding="utf-8") as source_file:
+            records = list(csv.DictReader(source_file))
+        if issues_field:
+            for row_number, record in enumerate(records, start=1):
+                value = record.get(issues_field)
+                if isinstance(value, str):
+                    try:
+                        record[issues_field] = json.loads(value)
+                    except json.JSONDecodeError:
+                        raise ValueError(
+                            f"CSV record {row_number} field '{issues_field}' must contain a JSON issue list."
+                        ) from None
+        return records
+
+    try:
+        data = json.loads(source_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        raise ValueError(f"Source file '{source_path.name}' is not valid JSON.") from None
+    if isinstance(data, dict):
+        return [data]
+    if isinstance(data, list) and all(isinstance(item, dict) for item in data):
+        return data
+    raise ValueError("JSON source must contain one object or a list of objects.")
+
+
+def write_cases(cases: Sequence[EvalCase], out_path: str | Path) -> None:
+    """Write normalized cases as UTF-8 JSON Lines."""
+    path = Path(out_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    content = "".join(
+        json.dumps(case.model_dump(mode="json"), ensure_ascii=False) + "\n"
+        for case in cases
+    )
+    path.write_text(content, encoding="utf-8")
+
+
+def filter_language(cases: Sequence[EvalCase], language: str) -> list[EvalCase]:
+    """Return cases whose language matches without case sensitivity."""
+    selected_language = language.strip().casefold()
+    return [case for case in cases if case.language.strip().casefold() == selected_language]
