@@ -53,6 +53,8 @@ class HttpLLMClient:
                 "messages": self._chat_messages(messages),
                 "tools": self._chat_tools(tools),
             }
+        else:
+            url = f"{settings.llm_base_url.rstrip('/')}/responses"
         path = httpx.URL(url).path
         payload = {
             "model": settings.llm_model,
