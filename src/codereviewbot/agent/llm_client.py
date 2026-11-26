@@ -51,6 +51,8 @@ class HttpLLMClient:
             payload = {
                 "model": settings.llm_model,
                 "messages": self._chat_messages(messages),
+                "tools": self._chat_tools(tools),
+            }
         path = httpx.URL(url).path
         payload = {
             "model": settings.llm_model,
