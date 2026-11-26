@@ -152,6 +152,8 @@ class HttpLLMClient:
         if content is not None and not isinstance(content, str):
             raise LLMClientError("Chat Completions API returned invalid message content.")
         raw_calls = message.get("tool_calls") or []
+        if not isinstance(raw_calls, list):
+            raise LLMClientError("Chat Completions API returned invalid tool calls.")
     def _post(
         self,
         url: str,
