@@ -116,6 +116,8 @@ class HttpLLMClient:
                             },
                         }
                     )
+                    index += 1
+                converted.append({"role": "assistant", "tool_calls": tool_calls})
     def _post(
         self,
         url: str,
