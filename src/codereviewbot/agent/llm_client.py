@@ -135,6 +135,9 @@ class HttpLLMClient:
         return converted
 
     @staticmethod
+    def _parse_chat_response(response_data: Any) -> ModelResponse:
+        """Convert one Chat Completions choice into the shared response model."""
+        try:
     def _post(
         self,
         url: str,
