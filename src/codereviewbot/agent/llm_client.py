@@ -110,6 +110,8 @@ class HttpLLMClient:
                         {
                             "id": call["call_id"],
                             "type": "function",
+                            "function": {
+                                "name": call["name"],
     def _post(
         self,
         url: str,
