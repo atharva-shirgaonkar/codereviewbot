@@ -95,6 +95,8 @@ class HttpLLMClient:
     def _chat_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Translate Responses function items into Chat Completions messages."""
         converted: list[dict[str, Any]] = []
+        index = 0
+        while index < len(messages):
     def _post(
         self,
         url: str,
