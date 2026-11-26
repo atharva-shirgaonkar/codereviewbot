@@ -103,6 +103,9 @@ class HttpLLMClient:
                 tool_calls: list[dict[str, Any]] = []
                 while index < len(messages) and messages[index].get("type") == "function_call":
                     call = messages[index]
+                    arguments = call.get("arguments", "{}")
+                    if not isinstance(arguments, str):
+                        arguments = json.dumps(arguments)
     def _post(
         self,
         url: str,
