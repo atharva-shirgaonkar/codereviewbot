@@ -40,3 +40,14 @@ def convert_records(
     ``issues`` for case fields, plus ``path``, ``line``, and ``description``
     for fields within each issue. No source schema is inferred.
     """
+    source_fields = {key: _source_name(mapping, key) for key in MAPPING_KEYS}
+    cases: list[EvalCase] = []
+    for record_number, record in enumerate(records, start=1):
+        values: dict[str, Any] = {}
+        for field in ("case_id", "repo", "pr_number", "language"):
+            source_name = source_fields[field]
+            if source_name not in record:
+                raise ValueError(
+                    f"Record {record_number} is missing source field '{source_name}' for '{field}'."
+                )
+            values[field] = record[source_name]
