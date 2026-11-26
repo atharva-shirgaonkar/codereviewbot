@@ -51,3 +51,10 @@ def convert_records(
                     f"Record {record_number} is missing source field '{source_name}' for '{field}'."
                 )
             values[field] = record[source_name]
+
+        issues_source = source_fields["issues"]
+        if issues_source not in record:
+            raise ValueError(
+                f"Record {record_number} is missing source field '{issues_source}' for 'issues'."
+            )
+        raw_issues = record[issues_source]
