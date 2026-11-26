@@ -78,3 +78,11 @@ def convert_records(
                 if source_name not in raw_issue:
                     raise ValueError(
                         f"Record {record_number} issue {issue_number} is missing "
+                        f"source field '{source_name}' for '{field}'."
+                    )
+                normalized_issue[field] = raw_issue[source_name]
+            normalized_issues.append(normalized_issue)
+        values["issues"] = normalized_issues
+        try:
+            cases.append(EvalCase.model_validate(values))
+        except ValidationError:
