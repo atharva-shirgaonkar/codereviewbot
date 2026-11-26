@@ -55,6 +55,7 @@ class HttpLLMClient:
             }
         else:
             url = f"{settings.llm_base_url.rstrip('/')}/responses"
+            payload = {"model": settings.llm_model, "input": messages, "tools": tools}
         path = httpx.URL(url).path
         payload = {
             "model": settings.llm_model,
