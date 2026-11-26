@@ -49,6 +49,8 @@ class HttpLLMClient:
         if style == "chat_completions":
             url = f"{settings.llm_base_url.rstrip('/')}/chat/completions"
             payload = {
+                "model": settings.llm_model,
+                "messages": self._chat_messages(messages),
         path = httpx.URL(url).path
         payload = {
             "model": settings.llm_model,
