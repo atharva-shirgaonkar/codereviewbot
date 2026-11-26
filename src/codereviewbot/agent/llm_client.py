@@ -91,6 +91,8 @@ class HttpLLMClient:
             chat_tools.append({"type": "function", "function": function})
         return chat_tools
 
+    @staticmethod
+    def _chat_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     def _post(
         self,
         url: str,
