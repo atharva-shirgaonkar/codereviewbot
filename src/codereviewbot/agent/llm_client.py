@@ -35,6 +35,11 @@ class HttpLLMClient:
     ) -> ModelResponse:
         """Request and normalize one model response."""
         settings = get_settings()
+        style = settings.llm_api_style.strip().lower()
+        if style not in {"responses", "chat_completions"}:
+            raise LLMClientError(
+                "LLM_API_STYLE must be 'responses' or 'chat_completions'."
+            )
         api_key = settings.require_llm_api_key()
         if not settings.llm_base_url:
             raise LLMClientError("LLM_BASE_URL must be set before calling the model.")
