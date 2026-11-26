@@ -55,6 +55,12 @@ def main() -> None:
         records = read_records(
             args.convert,
             issues_field=issues_field if isinstance(issues_field, str) else None,
+        )
+        converted = convert_records(records, mapping)
+        if args.language:
+            converted = filter_language(converted, args.language)
+        if args.limit is not None:
+            converted = converted[: args.limit]
     if args.handcheck_export:
         exported = export_handcheck(*args.handcheck_export, seed=args.seed)
         print(f"Exported {exported} judge decisions.")
