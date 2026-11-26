@@ -140,6 +140,9 @@ class HttpLLMClient:
         try:
             choice = response_data["choices"][0]
             message = choice["message"]
+            usage_data = response_data["usage"]
+            usage = Usage(
+                prompt_tokens=usage_data["prompt_tokens"],
     def _post(
         self,
         url: str,
