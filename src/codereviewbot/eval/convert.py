@@ -20,3 +20,11 @@ MAPPING_KEYS = (
     "line",
     "description",
 )
+
+
+def _source_name(mapping: dict[str, str], field: str) -> str:
+    """Return the mapped source key or explain what the mapping lacks."""
+    source_name = mapping.get(field)
+    if not isinstance(source_name, str) or not source_name:
+        raise ValueError(f"Mapping must provide a source field for '{field}'.")
+    return source_name
