@@ -29,7 +29,8 @@ def main() -> None:
     modes.add_argument("--handcheck-score", metavar="CSV", help="Score completed hand-check labels")
     modes.add_argument("--report", metavar="SUMMARY_JSON", help="Render a saved run summary")
     parser.add_argument("--cases", help="Path to the JSONL case dataset")
-    parser.add_argument("--out", help="Directory for evaluation results")
+    parser.add_argument(
+        "--mapping",
     parser.add_argument("--limit", type=int, help="Evaluate at most N cases")
     parser.add_argument("--max-steps", type=int, default=8, help="Model turns per review")
     parser.add_argument("--seed", type=int, default=42, help="Hand-check sample seed")
