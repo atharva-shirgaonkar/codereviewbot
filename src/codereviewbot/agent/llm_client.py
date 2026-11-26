@@ -157,6 +157,8 @@ class HttpLLMClient:
         tool_calls = [HttpLLMClient._parse_chat_tool_call(call) for call in raw_calls]
         return ModelResponse(content=content, tool_calls=tool_calls, usage=usage)
 
+    @staticmethod
+    def _parse_chat_tool_call(item: Any) -> ToolCall:
     def _post(
         self,
         url: str,
