@@ -154,6 +154,9 @@ class HttpLLMClient:
         raw_calls = message.get("tool_calls") or []
         if not isinstance(raw_calls, list):
             raise LLMClientError("Chat Completions API returned invalid tool calls.")
+        tool_calls = [HttpLLMClient._parse_chat_tool_call(call) for call in raw_calls]
+        return ModelResponse(content=content, tool_calls=tool_calls, usage=usage)
+
     def _post(
         self,
         url: str,
