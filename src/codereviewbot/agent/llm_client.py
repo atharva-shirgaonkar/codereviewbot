@@ -146,6 +146,9 @@ class HttpLLMClient:
                 completion_tokens=usage_data["completion_tokens"],
             )
         except (KeyError, IndexError, TypeError, ValidationError):
+            raise LLMClientError("Chat Completions API returned an incomplete response.") from None
+
+        content = message.get("content")
     def _post(
         self,
         url: str,
