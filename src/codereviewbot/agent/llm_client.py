@@ -71,6 +71,8 @@ class HttpLLMClient:
             response_data = response.json()
         except ValueError:
             raise LLMClientError(f"LLM API returned invalid JSON for {path}.") from None
+        if style == "chat_completions":
+            return self._parse_chat_response(response_data)
         return self._parse_response(response_data)
 
     def _post(
