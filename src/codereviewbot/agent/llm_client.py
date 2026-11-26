@@ -83,6 +83,8 @@ class HttpLLMClient:
             if tool.get("type") != "function" or not isinstance(tool.get("name"), str):
                 raise LLMClientError("Tool schema is not a supported function definition.")
             function = {
+                key: value
+                for key, value in tool.items()
     def _post(
         self,
         url: str,
