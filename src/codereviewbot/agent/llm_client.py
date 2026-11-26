@@ -75,6 +75,8 @@ class HttpLLMClient:
             return self._parse_chat_response(response_data)
         return self._parse_response(response_data)
 
+    @staticmethod
+    def _chat_tools(tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
     def _post(
         self,
         url: str,
