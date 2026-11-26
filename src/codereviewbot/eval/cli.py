@@ -31,6 +31,10 @@ def main() -> None:
     parser.add_argument("--cases", help="Path to the JSONL case dataset")
     parser.add_argument(
         "--mapping",
+        help="JSON mapping for case_id, repo, pr_number, language, issues, path, line, description",
+    )
+    parser.add_argument("--language", help="Keep only cases for this language when converting")
+    parser.add_argument("--out", help="Evaluation directory or converted JSONL output path")
     parser.add_argument("--limit", type=int, help="Evaluate at most N cases")
     parser.add_argument("--max-steps", type=int, default=8, help="Model turns per review")
     parser.add_argument("--seed", type=int, default=42, help="Hand-check sample seed")
