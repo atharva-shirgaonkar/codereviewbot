@@ -46,7 +46,7 @@ class HttpLLMClient:
         if not settings.llm_model:
             raise LLMClientError("LLM_MODEL must be set before calling the model.")
 
-        url = f"{settings.llm_base_url.rstrip('/')}/responses"
+        if style == "chat_completions":
         path = httpx.URL(url).path
         payload = {
             "model": settings.llm_model,
