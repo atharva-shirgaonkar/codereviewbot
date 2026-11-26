@@ -28,3 +28,15 @@ def _source_name(mapping: dict[str, str], field: str) -> str:
     if not isinstance(source_name, str) or not source_name:
         raise ValueError(f"Mapping must provide a source field for '{field}'.")
     return source_name
+
+
+def convert_records(
+    records: Sequence[dict[str, Any]],
+    mapping: dict[str, str],
+) -> list[EvalCase]:
+    """Convert records using explicit source names for case and issue fields.
+
+    Mapping keys are ``case_id``, ``repo``, ``pr_number``, ``language``, and
+    ``issues`` for case fields, plus ``path``, ``line``, and ``description``
+    for fields within each issue. No source schema is inferred.
+    """
