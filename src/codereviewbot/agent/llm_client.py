@@ -163,6 +163,8 @@ class HttpLLMClient:
         try:
             call_id = item["id"]
             function = item["function"]
+            name = function["name"]
+            arguments = json.loads(function["arguments"])
     def _post(
         self,
         url: str,
