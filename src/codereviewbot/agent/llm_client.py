@@ -81,6 +81,8 @@ class HttpLLMClient:
         chat_tools: list[dict[str, Any]] = []
         for tool in tools:
             if tool.get("type") != "function" or not isinstance(tool.get("name"), str):
+                raise LLMClientError("Tool schema is not a supported function definition.")
+            function = {
     def _post(
         self,
         url: str,
