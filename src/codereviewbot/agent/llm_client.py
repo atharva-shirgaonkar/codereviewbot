@@ -159,6 +159,8 @@ class HttpLLMClient:
 
     @staticmethod
     def _parse_chat_tool_call(item: Any) -> ToolCall:
+        """Decode one Chat Completions function call and validate its JSON."""
+        try:
     def _post(
         self,
         url: str,
