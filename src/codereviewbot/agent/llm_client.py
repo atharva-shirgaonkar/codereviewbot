@@ -132,6 +132,9 @@ class HttpLLMClient:
             else:
                 raise LLMClientError("Unsupported Responses history item for Chat Completions.")
             index += 1
+        return converted
+
+    @staticmethod
     def _post(
         self,
         url: str,
