@@ -33,3 +33,13 @@ pytest -v
 Run a pull request review with `python -m codereviewbot.cli owner/repo 123`. Comments are dry-run by default; use `--post-comments` to enable posting. Run an evaluation with `python -m codereviewbot.eval.cli --cases data/cases.jsonl --out results/run1`.
 
 ## Results
+
+No benchmark results yet.
+
+| Precision | Recall | F1 | Noise rate | Cost per PR | Latency | Model | Date | Command |
+|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | |
+
+## What it misses
+
+Not evaluated yet. This section will describe known limitations after benchmark results are available.
