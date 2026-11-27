@@ -29,6 +29,10 @@ class Settings(BaseModel):
         """Return whether Chat Completions targets a local Ollama server."""
         hostname = urlsplit(self.llm_base_url or "").hostname
         return (
+            self.llm_api_style.strip().lower() == "chat_completions"
+            and hostname in {"localhost", "127.0.0.1"}
+        )
+
 
 def get_settings() -> Settings:
     """Load optional local .env values and return current settings."""
