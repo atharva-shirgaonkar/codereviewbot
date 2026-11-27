@@ -1,5 +1,5 @@
 # CodeReviewBot
 
-CodeReviewBot is a Python agent project for reviewing GitHub pull requests, with the goal of evaluating review quality on public benchmarks.
+CodeReviewBot is a Python agent that reviews GitHub pull requests, gathers relevant code through tools, and produces structured review comments; its quality will be evaluated on public benchmarks.
 
 Work in progress. 
