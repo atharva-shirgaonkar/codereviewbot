@@ -413,6 +413,11 @@ def test_local_ollama_chat_completions_needs_no_key(
     )
     monkeypatch.setattr(llm_client, "get_settings", lambda: settings)
 
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url == "http://localhost:11434/v1/chat/completions"
+        assert "Authorization" not in request.headers
+        return httpx.Response(
+            200,
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
