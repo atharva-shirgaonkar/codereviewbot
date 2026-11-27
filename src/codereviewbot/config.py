@@ -25,6 +25,10 @@ class Settings(BaseModel):
             raise ValueError("LLM_API_KEY is required for this operation.")
         return self.llm_api_key.get_secret_value()
 
+    def uses_local_chat_endpoint(self) -> bool:
+        """Return whether Chat Completions targets a local Ollama server."""
+        hostname = urlsplit(self.llm_base_url or "").hostname
+        return (
 
 def get_settings() -> Settings:
     """Load optional local .env values and return current settings."""
