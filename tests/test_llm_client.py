@@ -442,6 +442,7 @@ def test_remote_chat_completions_without_key_errors(
         return httpx.Response(200)
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(ValueError, match="LLM_API_KEY is required"):
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
