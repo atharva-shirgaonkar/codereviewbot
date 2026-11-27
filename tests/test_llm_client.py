@@ -446,6 +446,7 @@ def test_remote_chat_completions_without_key_errors(
             HttpLLMClient(client=client).chat([], [])
 
     assert requests == []
+
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
