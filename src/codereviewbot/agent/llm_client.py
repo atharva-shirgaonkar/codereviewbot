@@ -62,6 +62,8 @@ class HttpLLMClient:
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
+        if api_key is not None:
+            headers["Authorization"] = f"Bearer {api_key}"
         response = self._post(url, headers, payload)
         if response.status_code != 200:
             raise LLMClientError(
