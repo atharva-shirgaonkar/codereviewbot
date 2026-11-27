@@ -422,6 +422,10 @@ def test_local_ollama_chat_completions_needs_no_key(
                 "choices": [{"message": {"content": "Local response."}}],
                 "usage": {"prompt_tokens": 2, "completion_tokens": 2},
             },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        result = HttpLLMClient(client=client).chat([], [])
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
