@@ -437,6 +437,7 @@ def test_remote_chat_completions_without_key_errors(
     set_api_style(monkeypatch, "chat_completions", api_key=None)
     requests: list[httpx.Request] = []
 
+    def handler(request: httpx.Request) -> httpx.Response:
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
