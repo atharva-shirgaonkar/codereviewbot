@@ -401,6 +401,10 @@ def test_chat_completions_missing_key_errors_without_network(
     assert requests == []
 
 
+def test_local_ollama_chat_completions_needs_no_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Local Ollama receives no Authorization header and needs no key."""
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
