@@ -59,7 +59,6 @@ class HttpLLMClient:
             payload = {"model": settings.llm_model, "input": messages, "tools": tools}
         path = httpx.URL(url).path
         headers = {
-            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
