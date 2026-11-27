@@ -21,7 +21,7 @@ class Settings(BaseModel):
 
     def require_llm_api_key(self) -> str:
         """Return the API key or raise when a caller explicitly requires it."""
-        if self.llm_api_key is None:
+        if self.llm_api_key is None or not self.llm_api_key.get_secret_value():
             raise ValueError("LLM_API_KEY is required for this operation.")
         return self.llm_api_key.get_secret_value()
 
