@@ -430,6 +430,10 @@ def test_local_ollama_chat_completions_needs_no_key(
     assert result.content == "Local response."
 
 
+def test_remote_chat_completions_without_key_errors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Remote Chat Completions still requires a non-empty API key."""
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
