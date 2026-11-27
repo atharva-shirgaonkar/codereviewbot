@@ -40,7 +40,8 @@ class HttpLLMClient:
             raise LLMClientError(
                 "LLM_API_STYLE must be 'responses' or 'chat_completions'."
             )
-        api_key = settings.require_llm_api_key()
+        local_endpoint = settings.uses_local_chat_endpoint()
+        api_key = None if local_endpoint else settings.require_llm_api_key()
         if not settings.llm_base_url:
             raise LLMClientError("LLM_BASE_URL must be set before calling the model.")
         if not settings.llm_model:
