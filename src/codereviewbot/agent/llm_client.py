@@ -211,7 +211,6 @@ class HttpLLMClient:
                 url,
                 headers=headers,
                 json=payload,
-                timeout=self._timeout,
             )
         with httpx.Client(timeout=self._timeout) as client:
             return client.post(url, headers=headers, json=payload)
