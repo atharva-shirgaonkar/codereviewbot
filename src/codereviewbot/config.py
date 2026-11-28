@@ -4,7 +4,6 @@ import os
 from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
-from pydantic import BaseModel, SecretStr
 
 
 class Settings(BaseModel):
