@@ -80,6 +80,7 @@ class HttpLLMClient:
         }
         if api_key is not None:
             headers["Authorization"] = f"Bearer {api_key}"
+        try:
         if response.status_code != 200:
             raise LLMClientError(
                 f"LLM API returned HTTP {response.status_code} for {path}."
