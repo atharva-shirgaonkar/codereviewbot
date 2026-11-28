@@ -455,6 +455,7 @@ def test_local_host_uses_120_second_default(monkeypatch: pytest.MonkeyPatch) -> 
         llm_client,
         "get_settings",
         lambda: Settings(
+            llm_api_key=SecretStr("test-only-key"),
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
