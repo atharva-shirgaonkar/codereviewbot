@@ -14,6 +14,7 @@ class Settings(BaseModel):
     llm_base_url: str | None = None
     llm_model: str | None = None
     llm_api_style: str = "responses"
+    llm_timeout_seconds: float | None = Field(default=None, gt=0)
     github_token: SecretStr | None = None
     llm_input_price_per_m: float | None = None
     llm_output_price_per_m: float | None = None
