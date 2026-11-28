@@ -24,7 +24,6 @@ class HttpLLMClient:
     def __init__(
         self,
         client: httpx.Client | None = None,
-        timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         self._client = client
         self._timeout = timeout
