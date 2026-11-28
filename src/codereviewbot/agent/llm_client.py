@@ -59,6 +59,7 @@ class HttpLLMClient:
         timeout = self._timeout
         if timeout is None:
             timeout = settings.llm_timeout_seconds
+        if timeout is None:
         if style == "chat_completions":
             url = f"{settings.llm_base_url.rstrip('/')}/chat/completions"
             payload = {
