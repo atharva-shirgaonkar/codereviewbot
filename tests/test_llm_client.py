@@ -478,6 +478,16 @@ def test_remote_host_uses_30_second_default(configured_client: None) -> None:
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
         HttpLLMClient(client=client).chat([], [])
+
+
+def test_timeout_environment_override(monkeypatch: pytest.MonkeyPatch) -> None:
+    """LLM_TIMEOUT_SECONDS overrides the host-specific default."""
+    monkeypatch.setattr(config, "load_dotenv", lambda: None)
+    monkeypatch.setenv("LLM_API_KEY", "test-only-key")
+    monkeypatch.setenv("LLM_BASE_URL", "http://localhost:11434/v1")
+    monkeypatch.setenv("LLM_MODEL", "local-model")
+    monkeypatch.setenv("LLM_TIMEOUT_SECONDS", "47.5")
+    monkeypatch.setattr(llm_client, "get_settings", config.get_settings)
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
