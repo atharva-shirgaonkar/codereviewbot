@@ -450,6 +450,7 @@ def test_remote_chat_completions_without_key_errors(
 
 
 def test_local_host_uses_120_second_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Local endpoints get more time for model startup and generation."""
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
