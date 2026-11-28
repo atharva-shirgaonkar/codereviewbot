@@ -41,6 +41,7 @@ class HttpLLMClient:
             fields = {str(item["loc"][0]) for item in error.errors() if item["loc"]}
             if "llm_timeout_seconds" in fields:
                 raise LLMClientError(
+                    "LLM_TIMEOUT_SECONDS must be a positive number of seconds."
         style = settings.llm_api_style.strip().lower()
         if style not in {"responses", "chat_completions"}:
             raise LLMClientError(
