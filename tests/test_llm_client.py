@@ -465,6 +465,7 @@ def test_local_host_uses_120_second_default(monkeypatch: pytest.MonkeyPatch) -> 
         assert request.extensions["timeout"]["read"] == 120.0
         return httpx.Response(200, json=response_body([]))
 
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
