@@ -38,6 +38,7 @@ class HttpLLMClient:
         try:
             settings = get_settings()
         except ValidationError as error:
+            fields = {str(item["loc"][0]) for item in error.errors() if item["loc"]}
         style = settings.llm_api_style.strip().lower()
         if style not in {"responses", "chat_completions"}:
             raise LLMClientError(
