@@ -84,6 +84,7 @@ class HttpLLMClient:
             response = self._post(url, headers, payload, timeout)
         except httpx.TimeoutException:
             raise LLMClientError(
+                f"LLM request timed out after {timeout:g} seconds. "
         if response.status_code != 200:
             raise LLMClientError(
                 f"LLM API returned HTTP {response.status_code} for {path}."
