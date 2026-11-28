@@ -213,7 +213,6 @@ class HttpLLMClient:
                 json=payload,
                 timeout=timeout,
             )
-        with httpx.Client(timeout=self._timeout) as client:
             return client.post(url, headers=headers, json=payload)
 
     @staticmethod
