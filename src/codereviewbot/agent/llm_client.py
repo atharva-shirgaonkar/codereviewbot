@@ -203,6 +203,7 @@ class HttpLLMClient:
         url: str,
         headers: dict[str, str],
         payload: dict[str, Any],
+        timeout: float,
     ) -> httpx.Response:
         """Post JSON with a timeout, reusing an injected client when given."""
         if self._client is not None:
