@@ -43,6 +43,7 @@ def get_settings() -> Settings:
         llm_base_url=os.getenv("LLM_BASE_URL"),
         llm_model=os.getenv("LLM_MODEL"),
         llm_api_style=os.getenv("LLM_API_STYLE", "responses"),
+        llm_timeout_seconds=os.getenv("LLM_TIMEOUT_SECONDS") or None,
         github_token=os.getenv("GITHUB_TOKEN"),
         llm_input_price_per_m=os.getenv("LLM_INPUT_PRICE_PER_M") or None,
         llm_output_price_per_m=os.getenv("LLM_OUTPUT_PRICE_PER_M") or None,
