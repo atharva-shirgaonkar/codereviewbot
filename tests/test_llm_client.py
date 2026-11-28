@@ -494,6 +494,19 @@ def test_timeout_environment_override(monkeypatch: pytest.MonkeyPatch) -> None:
         return httpx.Response(200, json=response_body([]))
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        HttpLLMClient(client=client).chat([], [])
+
+
+def test_timeout_error_is_clear_and_does_not_expose_request_details(
+    configured_client: None,
+) -> None:
+    """Timeout exceptions become safe, actionable client errors."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ReadTimeout("https://llm.example/private?token=secret")
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(LLMClientError) as error:
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
