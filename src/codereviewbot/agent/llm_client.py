@@ -56,6 +56,7 @@ class HttpLLMClient:
         if not settings.llm_model:
             raise LLMClientError("LLM_MODEL must be set before calling the model.")
 
+        timeout = self._timeout
         if style == "chat_completions":
             url = f"{settings.llm_base_url.rstrip('/')}/chat/completions"
             payload = {
