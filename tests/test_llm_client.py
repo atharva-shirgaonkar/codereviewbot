@@ -507,6 +507,15 @@ def test_timeout_error_is_clear_and_does_not_expose_request_details(
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
         with pytest.raises(LLMClientError) as error:
+            HttpLLMClient(client=client).chat([], [])
+
+    assert str(error.value) == (
+        "LLM request timed out after 30 seconds. Increase "
+        "LLM_TIMEOUT_SECONDS or warm up the model."
+    )
+    assert "llm.example" not in str(error.value)
+    assert "token" not in str(error.value)
+
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
