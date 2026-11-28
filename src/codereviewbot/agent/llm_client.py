@@ -62,6 +62,7 @@ class HttpLLMClient:
         if timeout is None:
             host = httpx.URL(settings.llm_base_url).host
             timeout = LOCAL_TIMEOUT if host in {"localhost", "127.0.0.1"} else DEFAULT_TIMEOUT
+
         if style == "chat_completions":
             url = f"{settings.llm_base_url.rstrip('/')}/chat/completions"
             payload = {
