@@ -11,6 +11,7 @@ from .types import ModelResponse, ToolCall, Usage
 
 
 DEFAULT_TIMEOUT = 30.0
+LOCAL_TIMEOUT = 120.0
 
 
 class LLMClientError(RuntimeError):
