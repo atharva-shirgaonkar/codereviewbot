@@ -473,6 +473,7 @@ def test_remote_host_uses_30_second_default(configured_client: None) -> None:
     """Remote endpoints retain the 30 second default timeout."""
 
     def handler(request: httpx.Request) -> httpx.Response:
+        assert request.extensions["timeout"]["read"] == 30.0
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
