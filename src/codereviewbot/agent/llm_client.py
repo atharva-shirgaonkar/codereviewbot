@@ -43,6 +43,7 @@ class HttpLLMClient:
                 raise LLMClientError(
                     "LLM_TIMEOUT_SECONDS must be a positive number of seconds."
                 ) from None
+            raise
         style = settings.llm_api_style.strip().lower()
         if style not in {"responses", "chat_completions"}:
             raise LLMClientError(
