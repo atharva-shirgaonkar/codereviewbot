@@ -488,6 +488,12 @@ def test_timeout_environment_override(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("LLM_MODEL", "local-model")
     monkeypatch.setenv("LLM_TIMEOUT_SECONDS", "47.5")
     monkeypatch.setattr(llm_client, "get_settings", config.get_settings)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.extensions["timeout"]["read"] == 47.5
+        return httpx.Response(200, json=response_body([]))
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
