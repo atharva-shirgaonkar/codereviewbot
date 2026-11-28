@@ -35,6 +35,7 @@ class HttpLLMClient:
         tools: list[dict[str, Any]],
     ) -> ModelResponse:
         """Request and normalize one model response."""
+        try:
         style = settings.llm_api_style.strip().lower()
         if style not in {"responses", "chat_completions"}:
             raise LLMClientError(
