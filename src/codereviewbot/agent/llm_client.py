@@ -40,6 +40,7 @@ class HttpLLMClient:
         except ValidationError as error:
             fields = {str(item["loc"][0]) for item in error.errors() if item["loc"]}
             if "llm_timeout_seconds" in fields:
+                raise LLMClientError(
         style = settings.llm_api_style.strip().lower()
         if style not in {"responses", "chat_completions"}:
             raise LLMClientError(
