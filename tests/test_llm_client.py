@@ -8,6 +8,7 @@ from pydantic import SecretStr
 
 from codereviewbot.agent import llm_client
 from codereviewbot.agent.llm_client import HttpLLMClient, LLMClientError
+from codereviewbot import config
 from codereviewbot.config import Settings
 
 
