@@ -516,6 +516,17 @@ def test_timeout_error_is_clear_and_does_not_expose_request_details(
     assert "llm.example" not in str(error.value)
     assert "token" not in str(error.value)
 
+
+def test_invalid_timeout_errors_only_when_client_is_used(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Bad timeout environment values produce a clear client-use error."""
+    monkeypatch.setattr(config, "load_dotenv", lambda: None)
+    monkeypatch.setenv("LLM_API_KEY", "test-only-key")
+    monkeypatch.setenv("LLM_BASE_URL", "https://llm.example/v1")
+    monkeypatch.setenv("LLM_MODEL", "test-model")
+    monkeypatch.setenv("LLM_TIMEOUT_SECONDS", "slow")
+    monkeypatch.setattr(llm_client, "get_settings", config.get_settings)
 def test_unknown_api_style_fails_without_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unsupported API style raises a clear error when the client is used."""
     set_api_style(monkeypatch, "mystery")
