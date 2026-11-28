@@ -85,6 +85,7 @@ class HttpLLMClient:
         except httpx.TimeoutException:
             raise LLMClientError(
                 f"LLM request timed out after {timeout:g} seconds. "
+                "Increase LLM_TIMEOUT_SECONDS or warm up the model."
         if response.status_code != 200:
             raise LLMClientError(
                 f"LLM API returned HTTP {response.status_code} for {path}."
